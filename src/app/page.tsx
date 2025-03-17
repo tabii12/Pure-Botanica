@@ -16,7 +16,7 @@ export default function Home() {
     },
     {
       id: 2,
-      name: "Product 2",
+      name: "Product 222",
       price: 200,
       description: "Description 2",
       image: "https://via.placeholder.com/150",
@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <ProductList products={products} title={title} />
+      <ProductList props={{ title: title, products: products }} />
       </main>
       <footer className={styles.footer}>footer</footer>
     </div>
