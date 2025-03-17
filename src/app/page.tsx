@@ -3,27 +3,10 @@ import styles from "./page.module.css";
 import ProductList from "./components/productlist";
 import { Product } from "./components/productinterface";
 
-export default function Home() {
+export default async function Home() {
   const title = "Product List";
 
-  const products = [
-    {
-      id: 1,
-      name: "Product 1",
-      price: 100,
-      description: "Description 1",
-      image: "https://via.placeholder.com/150",
-      category: "Category 1",
-    },
-    {
-      id: 2,
-      name: "Product 222",
-      price: 200,
-      description: "Description 2",
-      image: "https://via.placeholder.com/150",
-      category: "Category 2",
-    },
-  ];
+  const products = await getProducts("http://localhost:3001/products");
 
   return (
     <div className={styles.page}>
