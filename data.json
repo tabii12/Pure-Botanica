@@ -1,0 +1,52 @@
+{
+    "products": [
+        {
+        "id": 1,
+        "name": "Tulip Đỏ",
+        "price": 150000,
+        "description": "Hoa tulip đỏ tượng trưng cho tình yêu mãnh liệt và sự đam mê.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        },
+        {
+        "id": 2,
+        "name": "Tulip Vàng",
+        "price": 140000,
+        "description": "Hoa tulip vàng mang ý nghĩa của sự vui vẻ, ánh sáng và tình bạn.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        },
+        {
+        "id": 3,
+        "name": "Tulip Hồng",
+        "price": 160000,
+        "description": "Hoa tulip hồng tượng trưng cho sự nhẹ nhàng, tình cảm và lòng biết ơn.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        },
+        {
+        "id": 4,
+        "name": "Tulip Trắng",
+        "price": 155000,
+        "description": "Hoa tulip trắng mang ý nghĩa của sự thuần khiết và lòng kính trọng.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        },
+        {
+        "id": 5,
+        "name": "Tulip Tím",
+        "price": 170000,
+        "description": "Hoa tulip tím tượng trưng cho sự sang trọng, quý phái và bí ẩn.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        },
+        {
+        "id": 6,
+        "name": "Tulip Cam",
+        "price": 145000,
+        "description": "Hoa tulip cam thể hiện sự ấm áp, hạnh phúc và năng lượng tích cực.",
+        "image": "https://via.placeholder.com/150",
+        "category": "Hoa Tulip"
+        }
+    ]
+}

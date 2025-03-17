@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import ProductList from "./components/productlist";
+import { Product } from "./components/productinterface";
 
 export default function Home() {
   const title = "Product List";
@@ -32,4 +33,20 @@ export default function Home() {
       <footer className={styles.footer}>footer</footer>
     </div>
   );
+}
+
+async function getProducts(url: string){
+  let res = await fetch(url);
+  let data = await res.json();
+  let products: Product[] = data.map((product:any) => {
+    return {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      image: product.image,
+      category: product.category,
+    };
+  });
+  return products;
 }
