@@ -36,6 +36,7 @@ export default function RootLayout({
           <Link href="/login">Đăng nhập</Link>
           <Link href="/register">Đăng ký</Link>
           <Link href="/contact">Liên hệ</Link>
+          <Link href="/state">State</Link>
         </nav>
 
         {children}

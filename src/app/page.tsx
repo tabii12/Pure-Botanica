@@ -9,7 +9,7 @@ export default async function Home() {
   const products = await getProducts("http://localhost:3001/products");
 
   return (
-    <div className={styles.page}>
+    <div>
       <main className={styles.main}>
       <ProductList props={{ title: title, products: products }} />
       </main>
