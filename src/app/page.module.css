@@ -92,6 +92,16 @@ a.secondary {
   min-width: 158px;
 }
 
+.banner{
+  width: 100vw;
+  height: 500px;
+  background-color: #f2f2f2;
+  color: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .footer {
   grid-row-start: 3;
   display: flex;

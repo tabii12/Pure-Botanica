@@ -11,7 +11,9 @@ export default async function Home() {
   return (
     <div>
       <main className={styles.main}>
+      <div className={styles.banner}>this is banner</div>
       <ProductList props={{ title: title, products: products }} />
+      <ProductList props={{ title: 'Product List 2', products: products }} />
       </main>
       <footer className={styles.footer}>footer</footer>
     </div>
