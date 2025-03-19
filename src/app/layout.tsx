@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -25,10 +26,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <nav>home</nav>
+        <header>
+          <h1>Pure Botanica</h1>
+        </header>
+
+        <nav style={{ display: "flex", gap: "20px", padding: "10px" }}>
+          <Link href="/">Home</Link>
+          <Link href="/about">Giới thiệu</Link>
+          <Link href="/login">Đăng nhập</Link>
+          <Link href="/register">Đăng ký</Link>
+          <Link href="/contact">Liên hệ</Link>
+        </nav>
+
         {children}
 
-        <footer>footer</footer>
+        <footer>
+          <p>© 2024 Pure Botanica</p>
+        </footer>
       </body>
     </html>
   );
