@@ -1,12 +1,12 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0fff0; /* Xanh lá nhạt */
+  --foreground: #006400; /* Xanh lá đậm hơn để làm điểm nhấn */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #d4edda; /* Xanh lá nhạt hơn cho chế độ tối */
+    --foreground: #004d00; /* Xanh lá đậm hơn cho chế độ tối */
   }
 }
 
@@ -20,22 +20,116 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-body{
+.category-list img {
+  border: 3px solid var(--foreground);
+  box-shadow: 0 4px 8px rgba(0, 100, 0, 0.5);
+}
+
+.category-list {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.category-list div {
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
-  min-height: 100vh;
+  text-align: center;
+}
+
+.category-list img {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.category-list img:hover {
+  transform: scale(1.05);
+}
+
+.category-list h3 {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+
+.product-list{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+
+
+.product-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.product-card h1 {
+  font-size: 22px;
+  color: #ff6600;
+  margin: 10px 0;
+}
+
+.product-card .price {
+  font-weight: bold;
+  color: #d9534f;
+  font-size: 18px;
+}
+
+.product-card p {
+  font-size: 16px;
+  color: #333;
+}
+
+.product-card {
+  background: #ffffff; /* Trắng */
+  border: 2px solid var(--foreground);
+}
+
+.product-card h1 {
+  color: var(--foreground);
+}
+
+.product-card .price {
+  color: var(--foreground);
+}
+
+.product-card p {
+  color: #333;
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0 auto;
+  width: 100%;
+  text-align: center;
 }
 
 a {

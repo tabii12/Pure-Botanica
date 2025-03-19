@@ -7,11 +7,13 @@ export default function ProductList(
     return (
         <div>
             <h1>{props.title}</h1>
+            <div className="product-list">
             {
                 props.products.map((product: Product) => 
                 <ProductItem key={product.id} product={product} />
                 )
             }
+            </div>
         </div>
     );
 }

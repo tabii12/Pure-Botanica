@@ -102,6 +102,8 @@ a.secondary {
   align-items: center;
 }
 
+
+
 .footer {
   grid-row-start: 3;
   display: flex;
