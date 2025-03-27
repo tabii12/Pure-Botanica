@@ -1,0 +1,171 @@
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 35px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background-color: #dceadf; /* Màu xám nhẹ */
+    color: #4a7c59;
+    margin: 0 10px;
+}
+
+.step.active {
+    background-color: #4a7c59; /* Màu xanh đậm */
+    color: white;
+}
+
+.arrow {
+    margin: 0 10px;
+    font-size: 18px;
+    color: gray;
+}
+
+.cart-container {
+    width: 1290px;
+    padding: 30px;
+    margin: 0 auto; 
+}
+
+/* Chia bố cục trái - phải */
+.cart-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Bên trái - Bảng sản phẩm */
+.cart-left {
+    width: 70%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-weight: 700;
+    padding-bottom: 10px;
+}
+
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Căn chỉnh sản phẩm */
+.product {
+    padding-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+}
+
+/* Nút tăng giảm số lượng */
+.quantity-controls {
+    align-items: center;  /* Căn giữa theo chiều dọc */
+    justify-content: center;  /* Căn giữa theo chiều ngang */
+    gap: 10px;
+    height: 100%; /* Đảm bảo full chiều cao của ô chứa */
+}
+
+.quantity-controls button {
+    background: none;
+    border: 1px solid #4a7c59;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.quantity-controls .minus, .quantity-controls .plus {
+    background: #4a7c59;
+    color: white;
+}
+
+/* Bên phải - Phần thanh toán */
+.cart-right {
+    border-left: solid black;
+    width: 28%;
+    background: white;
+    padding: 20px;
+    margin-left: 10px;
+
+}
+
+.discount {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.discount input {
+    padding: 10px;
+    width: 220px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.apply {
+    background: #4a7c59;
+    color: white;
+    font-weight: 600;
+    width: 23%;
+}
+
+.summary p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    padding: 5px 0;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.checkout {
+    background: green;
+    color: white;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Nút tiếp tục mua sắm */
+.continue-shopping {
+    background: none;
+    border: 1px solid #4a7c59;
+    color: #4a7c59;
+    font-size: 16px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
