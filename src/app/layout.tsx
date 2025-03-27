@@ -23,32 +23,33 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <header>
           <div className="container header-container">
             <div className="logo">
-              <Link href="/">
-                <img src="/images/logo.png" alt="Pure Botanica" />
-              </Link>
+              <img src="\images\logo.png" alt="Pure Botanica" />
             </div>
             <nav>
-              <Link href="/product">Sản phẩm</Link>
-              <Link href="/about">Về chúng tôi</Link>
-              <Link href="/contact">Liên hệ</Link>
-              <Link href="/news">Tin tức</Link>
+              <Link href="/product" className="dropdown">
+                Sản phẩm
+              </Link>
+              <Link href="#">Về chúng tôi</Link>
+              <Link href="#">Liên hệ</Link>
+              <Link href="#">Tin tức</Link>
             </nav>
             <div className="icons">
-              <div className="icon">🔍</div>
-              <Link href="/cart">
-                <div className="icon">🛒</div>
-              </Link>
-              <Link href="/register">
-                <div className="icon">👤</div>
-              </Link>
+              <i className="fa-solid fa-magnifying-glass"></i>
+              <i className="fa-solid fa-cart-shopping"></i>
+              <i className="fa-solid fa-user"></i>
             </div>
           </div>
         </header>
-
         <main>{children}</main>
 
         <footer className="footer">
