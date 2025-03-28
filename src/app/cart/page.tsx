@@ -6,11 +6,11 @@ export default function CartPage() {
             <div className="progress-container">
                 <div className="step active">1</div>
                 <span>Giỏ hàng</span>
-                <span className="arrow">›</span>
+              <i className="fa-solid fa-chevron-right"></i>
 
                 <div className="step">2</div>
                 <span>Chi tiết đơn hàng</span>
-                <span className="arrow">›</span>
+              <i className="fa-solid fa-chevron-right"></i>
 
                 <div className="step">3</div>
                 <span>Đơn hàng hoàn tất</span>
@@ -43,9 +43,7 @@ export default function CartPage() {
                                     </td>
                                     <td>165.000 đ</td>
                                     <td>
-                                        <button className="delete">
-                                            <i className="fa-solid fa-trash icon-delete"></i>
-                                        </button>
+                                    <i className="fa-solid fa-trash"></i>
                                     </td>
                                 </tr>
                             ))}
@@ -64,9 +62,9 @@ export default function CartPage() {
                     <div className="summary">
                         <p>Tổng: <span>7.605.000đ</span></p>
                         <p>Mã giảm: <span>-100.000đ</span></p>
-                        <p className="total">
-                            <strong>Tổng cộng: <span>7.705.000đ</span></strong>
-                        </p>
+                        <h6 className="total">
+                            <strong className="total2">Tổng cộng: <span>7.705.000đ</span></strong>
+                        </h6>
                     </div>
                     <button className="checkout">Thanh toán</button>
                 </div>

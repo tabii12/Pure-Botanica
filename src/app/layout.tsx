@@ -28,25 +28,31 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           rel="stylesheet"
         />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;300;400;700&display=swap" rel="stylesheet"
+        />
+
       </head>
       <body>
         <header>
           <div className="container header-container">
             <div className="logo">
-              <img src="\images\logo.png" alt="Pure Botanica" />
+            <Link href="/"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
             </div>
             <nav>
               <Link href="/product" className="dropdown">
                 Sản phẩm
-              </Link>
-              <Link href="#">Về chúng tôi</Link>
+
+
+                <i className="fa-solid fa-chevron-down"></i>
+                </Link>
+              <Link href="/about">Về chúng tôi</Link>
               <Link href="#">Liên hệ</Link>
               <Link href="#">Tin tức</Link>
             </nav>
             <div className="icons">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <i className="fa-solid fa-cart-shopping"></i>
-              <i className="fa-solid fa-user"></i>
+            <Link href="/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
+            <Link href="/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
+            <Link href="#"><i className="fa-solid fa-user"></i></Link>
             </div>
           </div>
         </header>

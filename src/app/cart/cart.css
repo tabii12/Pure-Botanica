@@ -4,13 +4,16 @@
     justify-content: center;
     margin-bottom: 35px;
     font-family: 'Roboto', sans-serif;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 400;
+}
+.progress-container span {
+    margin-right:10px;
 }
 
 .step {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -54,6 +57,9 @@ table {
     width: 100%;
     border-collapse: collapse;
 }
+tr{
+    font-size: 18px;
+}
 
 th {
     text-align: left;
@@ -62,7 +68,7 @@ th {
 }
 
 td {
-    padding: 15px 10px;
+    padding: 15px 2px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -90,7 +96,7 @@ td {
 
 .quantity-controls button {
     background: none;
-    border: 1px solid #4a7c59;
+    border: none;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
@@ -98,14 +104,11 @@ td {
     font-weight: bold;
 }
 
-.quantity-controls .minus, .quantity-controls .plus {
-    background: #4a7c59;
-    color: white;
-}
+
 
 /* Bên phải - Phần thanh toán */
 .cart-right {
-    border-left: solid black;
+    border-left: 1px solid black;
     width: 28%;
     background: white;
     padding: 20px;
@@ -123,11 +126,11 @@ td {
     padding: 10px;
     width: 220px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 12px;
 }
 
 .apply {
-    background: #4a7c59;
+    border-radius: 12px;
     color: white;
     font-weight: 600;
     width: 23%;
@@ -146,13 +149,19 @@ td {
 }
 
 .checkout {
-    background: green;
+    background: #357E38;
     color: white;
     width: 100%;
     padding: 15px;
     font-size: 18px;
     font-weight: bold;
     margin-top: 10px;
+}
+.total2{
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    padding: 5px 0;
 }
 
 /* Nút tiếp tục mua sắm */
@@ -168,4 +177,9 @@ td {
     margin-top: 20px;
     cursor: pointer;
     border-radius: 5px;
+}
+button{
+    background-color: #357E38;
+    border: none;
+
 }

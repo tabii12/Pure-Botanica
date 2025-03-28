@@ -8,7 +8,7 @@
 /* ----- BANNER SẢN PHẨM ----- */
 .productBanner {
     width: 100%;
-    height: 785px;
+    height: 700px;
 }
 
 .productBanner img {
@@ -52,11 +52,20 @@
 }
 
 .productSidebar ul li {
+    color: #357E38;
     padding: 8px 0;
     cursor: pointer;
     font-size: 14px;
 }
-
+.productSidebar .sub-menu1 {
+    color:#8D5524;
+}.productSidebar .sub-menu li {
+    color:#8D5524;
+}
+.productSidebar ul li i {
+    color:#8D5524;
+    font-size: 16px
+}
 .productSidebar ul .sub-menu {
     padding-left: 20px;
     font-size: 13px;
@@ -486,7 +495,7 @@
     background-color: #2a7e19;
     color: white;
     padding: 5px 10px;
-    border-radius: 4px;
+    border-radius: 0 5px 5px 0;
     font-size: 16px;
     
 }

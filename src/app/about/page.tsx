@@ -5,14 +5,14 @@ export default function AboutPage() {
         <div>
             {/* Banner */}
             <section className="banner-title">
-                <img src="image/banner.png" alt="Banner Pure-Botanica" />
+                <img src="images/banner.png" alt="Banner Pure-Botanica" />
                 <div className="title">
                     <h1>Về Chúng Tôi</h1>
                 </div>
             </section>
 
             {/* Nội dung chính */}
-            <main>
+            <section className="main">
                 {/* Ý Nghĩa Thương Hiệu */}
                 <section className="brand-meaning">
                     <h2>Ý NGHĨA THƯƠNG HIỆU</h2>
@@ -41,7 +41,7 @@ export default function AboutPage() {
                         yêu thương môi trường xung quanh, hãy đồng hành cùng chúng tôi vì một tương lai tốt đẹp hơn!
                     </p>
 
-                    <img src="image/suppbanner1.png" alt="Ý Nghĩa Thương Hiệu Pure-Botanica" />
+                    <img src="images/suppbanner1.png" alt="Ý Nghĩa Thương Hiệu Pure-Botanica" />
                 </section>
 
                 {/* Sứ Mệnh */}
@@ -55,7 +55,7 @@ export default function AboutPage() {
                     <p>
                         Hành trình gian nan tìm đến vẻ đẹp thật sự không phải là nhiệm vụ của riêng bạn, chúng tôi sẽ cùng bạn đi trên hành trình đó. Luôn luôn là như vậy, mãi mãi là như vậy.
                     </p>
-                    <img src="image/suppbanner2.png" alt="Sứ Mệnh Pure-Botanica" />
+                    <img src="images/suppbanner2.png" alt="Sứ Mệnh Pure-Botanica" />
                 </section>
 
                 {/* Cam Kết Luôn Đi Đôi Với Hành Động */}
@@ -112,7 +112,7 @@ export default function AboutPage() {
                     </div>
 
                     <div className="brand-value-right">
-                        <img src="image/suppbanner3.png" alt="Giá Trị Thương Hiệu Pure-Botanica" />
+                        <img src="images/suppbanner3.png" alt="Giá Trị Thương Hiệu Pure-Botanica" />
                     </div>
                     <div className="brand-value-bottom">
                         <p>
@@ -120,7 +120,7 @@ export default function AboutPage() {
                         </p>
                     </div>
                 </section>
-            </main>
+            </section>
         </div>
     );
 }

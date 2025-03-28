@@ -18,16 +18,16 @@ export default function ProductPage() {
                         <li>
                             <i className="fa-solid fa-caret-down" style={{ transform: "rotate(-90deg)" }}></i> Chăm sóc da
                         </li>
-                        <li>
+                        <li className="sub-menu1">
                             <i className="fa-solid fa-caret-down"></i> Chăm sóc cơ thể
-                            <ul className="sub-menu">
+                            <ul className="sub-menu" >
                                 <li>- Xà bông thiên nhiên</li>
                                 <li>- Sữa tắm thiên nhiên</li>
                                 <li>- Dưỡng thể</li>
                                 <li>- Tẩy da chết body</li>
                                 <li>- Chăm sóc rạng ngời</li>
                             </ul>
-                        </li>
+                        </li>   
                         <li>
                             <i className="fa-solid fa-caret-down" style={{ transform: "rotate(-90deg)" }}></i> Chăm sóc tóc
                         </li>
@@ -72,7 +72,7 @@ export default function ProductPage() {
                     {[...Array(6)].map((_, index) => (
                         <div className="best-selling-card" key={index}>
                             <div className="best-selling-badge">Sale</div>
-                            <div className="best-selling-/images">
+                            <div className="best-selling-image">
                                 <img src="/images/kemtrangdiem.png" alt="Product /Images" />
                             </div>
                             <div className="best-selling-details">
@@ -83,15 +83,7 @@ export default function ProductPage() {
                     ))}
                 </div>
             </div>
-            <hr
-                style={{
-                    border: "none",
-                    height: "1px",
-                    backgroundColor: "rgba(0, 0, 0, 0.1)",
-                    marginTop: "80px",
-                    marginBottom: "0",
-                }}
-            />
+           
         </div>
     );
 }
