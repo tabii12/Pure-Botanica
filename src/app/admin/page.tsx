@@ -1,6 +1,27 @@
+"use client";
+
 import "./page.css";
+import { Chart } from "react-google-charts";
 
 export default function AD_Home() {
+    const data = [
+        ["Ngày", "Doanh thu (VNĐ)"],
+        ["Thứ 2", 1200000],
+        ["Thứ 3", 1500000],
+        ["Thứ 4", 1100000],
+        ["Thứ 5", 1700000],
+        ["Thứ 6", 2000000],
+        ["Thứ 7", 2500000],
+        ["Chủ nhật", 1800000],
+    ];
+
+    const options = {
+        title: "Doanh thu theo ngày",
+        hAxis: { title: "Ngày" },
+        vAxis: { title: "Doanh thu (VNĐ)" },
+        legend: "none",
+    };
+
     return (
         <>
             <div className="main-content">
@@ -29,7 +50,13 @@ export default function AD_Home() {
                 </section>
 
                 <section className="chart-container">
-                    <canvas id="revenueChart"></canvas>
+                    <Chart
+                        chartType="ColumnChart"
+                        width="100%"
+                        height="400px"
+                        data={data}
+                        options={options}
+                    />
                 </section>
 
                 <section className="recent-orders">
