@@ -1,11 +1,11 @@
-import "../about/about.css";
+import "./about.css";
 
 export default function AboutPage() {
     return (
         <div>
             {/* Banner */}
             <section className="banner-title">
-                <img src="images/banner.png" alt="Banner Pure-Botanica" />
+                <img src="/images/banner.png" alt="Banner Pure-Botanica" />
                 <div className="title">
                     <h1>Về Chúng Tôi</h1>
                 </div>
