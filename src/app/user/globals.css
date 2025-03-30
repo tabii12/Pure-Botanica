@@ -40,8 +40,37 @@ nav a {
 }
 .dropdown i {
   margin-left: 5px; /* Điều chỉnh khoảng cách theo ý muốn */
+  position: relative;
 }
 
+.category-list{
+  position: absolute;
+  display: flex;
+  left: -422px;
+  top: 54px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.category-itemm{
+  width: 210px;
+  padding: 0 20px;
+}
+
+.category-itemm h2{
+  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+}
+
+.category-itemm ul{
+  list-style: none;
+  padding: 0; 
+}
+
+.category-itemm ul li{
+  padding: px 0;
+  font-size: 16px;
+  color: #333;
+}
 
 .icons {
   display: flex;
@@ -181,3 +210,5 @@ nav a {
   color: #777;
   align-items: center;
 }
+
+/* menu cate */

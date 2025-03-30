@@ -5,7 +5,7 @@ export default function CategoryList({ categories, subCategories }: { categories
     return (
         <div className="category-list">
             {categories.map((category) => (
-                <div key={category.id} className="category-item">
+                <div key={category.id} className="category-itemm">
                     <h2>{category.name}</h2>
                     <ul>
                         {subCategories
