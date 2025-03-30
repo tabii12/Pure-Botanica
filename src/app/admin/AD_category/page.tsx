@@ -9,7 +9,7 @@ export default function Category() {
             <span>Danh Mục Sản Phẩm</span>
             <div className="form-btn-add-new-category">
               <button className="btn-add-new-category">
-                <a href="index.php?page=addcate">Thêm danh mục sản phẩm</a>
+                <a href="">Thêm danh mục sản phẩm</a>
               </button>
             </div>
             <table>

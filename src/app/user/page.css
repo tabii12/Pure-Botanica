@@ -67,11 +67,11 @@
   
   width: 330px;
   height: 450px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    
-    position: relative;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+  position: relative;
 }
 .new-product-badge {
   text-align: center;
