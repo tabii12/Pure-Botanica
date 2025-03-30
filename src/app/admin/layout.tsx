@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <a href="/admin/AD_user" className="menu-item active">
               <span>Admin</span>
             </a>
-            <a href="/admin/user" className="menu-item">
+            <a href="/user" className="menu-item">
               <span>Đăng xuất</span>
             </a>
           </div>

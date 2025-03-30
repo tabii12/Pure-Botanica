@@ -6,7 +6,7 @@ export default function Home() {
     <div>
       <div className="container">
         <div className="banner">
-          <img src="/images/mainbanner.png" alt="Main Banner" />
+          <img src="/images//mainbanner.png" alt="Main Banner" />
         </div>
 
         <section className="new-products-section">
@@ -27,7 +27,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="image/new_product1.png" alt="New Product" />
+                    <img src="/images/new_product1.png" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Kem Dưỡng Da Cao Cấp</h3>
@@ -37,7 +37,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="image/new_product2.png" alt="New Product" />
+                    <img src="/images/new_product2.png" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Serum Dưỡng Ẩm Chuyên Sâu</h3>
@@ -47,7 +47,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="image/new_product3.png" alt="New Product" />
+                    <img src="/images/new_product3.png" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Sữa Rửa Mặt Thiên Nhiên</h3>
@@ -96,27 +96,27 @@ export default function Home() {
 
           <div className="category-nav">
             <a href="#" className="category-item">
-              <img src="/images/botrangdiem.png" alt="Trang điểm" className="category-icon" />
+              <img src="/images//botrangdiem.png" alt="Trang điểm" className="category-icon" />
               <p className="category-label">Bộ trang điểm</p>
             </a>
             <a href="#" className="category-item">
-              <img src="/images/chamsocda.png" alt="Chăm sóc da" className="category-icon" />
+              <img src="/images//chamsocda.png" alt="Chăm sóc da" className="category-icon" />
               <p className="category-label">Chăm sóc da</p>
             </a>
             <a href="#" className="category-item">
-              <img src="/images/chamsoccothe.png" alt="Chăm sóc cơ thể" className="category-icon" />
+              <img src="/images//chamsoccothe.png" alt="Chăm sóc cơ thể" className="category-icon" />
               <p className="category-label">Chăm sóc cơ thể</p>
             </a>
             <a href="#" className="category-item">
-              <img src="/images/chamsoctoc.png" alt="Chăm sóc tóc" className="category-icon" />
+              <img src="/images//chamsoctoc.png" alt="Chăm sóc tóc" className="category-icon" />
               <p className="category-label">Chăm sóc tóc</p>
             </a>
             <a href="#" className="category-item">
-              <img src="/images/huongthom.png" alt="Hương thơm" className="category-icon" />
+              <img src="/images//huongthom.png" alt="Hương thơm" className="category-icon" />
               <p className="category-label">Hương thơm</p>
             </a>
             <a href="#" className="category-item">
-              <img src="/images/mevabe.png" alt="Mẹ và bé" className="category-icon" />
+              <img src="/images//mevabe.png" alt="Mẹ và bé" className="category-icon" />
               <p className="category-label">Mẹ và bé</p>
             </a>
           </div>
@@ -126,7 +126,7 @@ export default function Home() {
           <section className="botanical-gallery">
             <div className="botanical-frame-left">
               <img
-                src="/images/cosmetics nature_1.png"
+                src="/images//cosmetics nature_1.png"
                 alt="Sản phẩm Pure Botanica với lá xanh và hoa"
                 className="botanical-photo"
               />
@@ -137,7 +137,7 @@ export default function Home() {
 
             <div className="botanical-frame-right">
               <img
-                src="/images/cosmetics nature_1.png"
+                src="/images//cosmetics nature_1.png"
                 alt="Bộ sưu tập sản phẩm Pure Botanica"
                 className="botanical-photo"
               />
@@ -194,7 +194,7 @@ export default function Home() {
           </div>
 
           <div className="brand-value-section">
-            <img src="/images/thuonghieu1.png" alt="Background with Natural Ingredients" className="brand-background" />
+            <img src="/images//thuonghieu1.png" alt="Background with Natural Ingredients" className="brand-background" />
             <div className="brand-content">
               <h2 className="brand-title">Giá trị thương hiệu</h2>
               <p className="brand-description">
