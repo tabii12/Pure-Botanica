@@ -47,14 +47,14 @@ export default async function RootLayout({
             <Link href="/user"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
             </div>
             <nav>
-              
-                <div className="menu-wrapper">
-                  <Link href="/user/product" className="dropdown">
-                    Sản phẩm
-                    <i className="fa-solid fa-chevron-down"></i>
-                  </Link>
-                  <CategoryList categories={category} subCategories={subCategory} />
-                </div>
+              <Link href="/user">Trang chủ</Link>
+              <div className="menu-wrapper">
+                <Link href="/user/product" className="dropdown">
+                  Sản phẩm
+                  {/* <i className="fa-solid fa-chevron-down"></i> */}
+                </Link>
+                <CategoryList categories={category} subCategories={subCategory} />
+              </div>
               <Link href="/user/about">Về chúng tôi</Link>
               <Link href="#">Liên hệ</Link>
               <Link href="#">Tin tức</Link>
