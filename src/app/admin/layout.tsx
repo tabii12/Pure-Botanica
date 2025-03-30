@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <a href="/admin/product" className="menu-item">
               <span>Sản phẩm</span>
             </a>
-            <a href="/admin/oder" className="menu-item">
+            <a href="/admin/order" className="menu-item">
               <span>Danh sách oder</span>
             </a>
             <a href="/admin/comment" className="menu-item">
