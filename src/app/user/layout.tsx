@@ -26,8 +26,8 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const category: Category[] = await getCategories("http://localhost:3001/categories");
   const subCategory: SubCategory[] = await getSubCategories("http://localhost:3001/sub_categories");
-  console.log(category);
-  console.log(subCategory);
+  // console.log(category);
+  // console.log(subCategory);
 
   return (
     <html lang="en">
@@ -130,7 +130,7 @@ async function getCategories(url: string): Promise<Category[]> {
   let res = await fetch(url);
 
   if (!res.ok) {
-    console.error("API request failed:", res.status, res.statusText);
+    // console.error("API request failed:", res.status, res.statusText);
     return [];
   }
 
@@ -138,7 +138,7 @@ async function getCategories(url: string): Promise<Category[]> {
 
   // Kiểm tra nếu `data` không phải là mảng
   if (!Array.isArray(data)) {
-    console.error("API không trả về một mảng categories hợp lệ:", data);
+    // console.error("API không trả về một mảng categories hợp lệ:", data);
     return [];
   }
 
@@ -153,7 +153,7 @@ async function getSubCategories(url: string): Promise<SubCategory[]> {
   let res = await fetch(url);
 
   if (!res.ok) {
-    console.error("API request failed:", res.status, res.statusText);
+    // console.error("API request failed:", res.status, res.statusText);
     return [];
   }
 
@@ -161,7 +161,7 @@ async function getSubCategories(url: string): Promise<SubCategory[]> {
 
   // Nếu API trả về một mảng, sử dụng trực tiếp `data`
   if (!Array.isArray(data)) {
-    console.error("API không trả về mảng sub_categories hợp lệ:", data);
+    // console.error("API không trả về mảng sub_categories hợp lệ:", data);
     return [];
   }
 
