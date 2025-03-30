@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="menu">
-            <a href="admin/index" className="menu-item">
+            <a href="admin" className="menu-item">
               <span>Dashboard</span>
             </a>
             <a href="admin/danhmuc" className="menu-item">
