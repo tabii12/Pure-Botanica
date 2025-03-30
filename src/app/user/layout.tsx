@@ -36,22 +36,22 @@ export default function RootLayout({
         <header>
           <div className="container header-container">
             <div className="logo">
-            <Link href="/"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
+            <Link href="/user"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
             </div>
             <nav>
-              <Link href="/product" className="dropdown">
+              <Link href="/user/product" className="dropdown">
                 Sản phẩm
 
 
                 <i className="fa-solid fa-chevron-down"></i>
                 </Link>
-              <Link href="/about">Về chúng tôi</Link>
+              <Link href="/user/about">Về chúng tôi</Link>
               <Link href="#">Liên hệ</Link>
               <Link href="#">Tin tức</Link>
             </nav>
             <div className="icons">
-            <Link href="/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
-            <Link href="/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
+            <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
+            <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
             <Link href="#"><i className="fa-solid fa-user"></i></Link>
             </div>
           </div>
