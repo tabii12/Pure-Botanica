@@ -10,31 +10,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="menu">
-            <a href="index.html" className="menu-item">
+            <a href="admin/index" className="menu-item">
               <span>Dashboard</span>
             </a>
-            <a href="danhmuc.html" className="menu-item">
+            <a href="admin/danhmuc" className="menu-item">
               <span>Danh mục</span>
             </a>
-            <a href="product.html" className="menu-item">
+            <a href="admin/product" className="menu-item">
               <span>Sản phẩm</span>
             </a>
-            <a href="oder.html" className="menu-item">
+            <a href="admin/oder" className="menu-item">
               <span>Danh sách oder</span>
             </a>
-            <a href="comment.html" className="menu-item">
+            <a href="admin/comment" className="menu-item">
               <span>Bình Luận</span>
             </a>
-            <a href="khuyenmai.html" className="menu-item">
+            <a href="admin/khuyenmai" className="menu-item">
               <span>Khuyến mãi</span>
             </a>
-            <a href="customer.html" className="menu-item">
+            <a href="admin/customer" className="menu-item">
               <span>Khách hàng</span>
             </a>
-            <a href="user.html" className="menu-item active">
+            <a href="admin/user" className="menu-item active">
               <span>Admin</span>
             </a>
-            <a href="logout.html" className="menu-item">
+            <a href="/user" className="menu-item">
               <span>Đăng xuất</span>
             </a>
           </div>
