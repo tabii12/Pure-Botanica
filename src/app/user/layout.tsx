@@ -28,7 +28,6 @@ export default async function RootLayout({
   const subCategory: SubCategory[] = await getSubCategories("https://db-pure-bonanica.onrender.com/sub_categories");
   // console.log(category);
   // console.log(subCategory);
-
   return (
     <html lang="en">
       <head>
@@ -130,46 +129,30 @@ export default async function RootLayout({
 }
 
 async function getCategories(url: string): Promise<Category[]> {
-  let res = await fetch(url);
-
-  if (!res.ok) {
-    // console.error("API request failed:", res.status, res.statusText);
-    return [];
-  }
+  let res = await fetch(url, { cache: "no-store" }); 
+  if (!res.ok) return [];
 
   let data = await res.json();
 
-  // Kiểm tra nếu `data` không phải là mảng
-  if (!Array.isArray(data)) {
-    // console.error("API không trả về một mảng categories hợp lệ:", data);
-    return [];
-  }
+  if (!Array.isArray(data)) return [];
 
   return data.map((category: any) => ({
-    id: category._id, // API trả về `_id`, nên phải đổi lại
+    id: category._id,
     name: category.name,
   }));
 }
 
-
 async function getSubCategories(url: string): Promise<SubCategory[]> {
-  let res = await fetch(url);
+  let res = await fetch(url, { cache: "no-store" });
 
-  if (!res.ok) {
-    // console.error("API request failed:", res.status, res.statusText);
-    return [];
-  }
+  if (!res.ok) return [];
 
   let data = await res.json();
 
-  // Nếu API trả về một mảng, sử dụng trực tiếp `data`
-  if (!Array.isArray(data)) {
-    // console.error("API không trả về mảng sub_categories hợp lệ:", data);
-    return [];
-  }
+  if (!Array.isArray(data)) return [];
 
   return data.map((sub_category: any) => ({
-    id: sub_category._id, // API dùng `_id`
+    id: sub_category._id,
     name: sub_category.name,
     category: sub_category.category,
   }));
