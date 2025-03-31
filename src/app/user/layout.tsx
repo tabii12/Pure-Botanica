@@ -26,8 +26,6 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const category: Category[] = await getCategories("https://db-pure-bonanica.onrender.com/categories");
   const subCategory: SubCategory[] = await getSubCategories("https://db-pure-bonanica.onrender.com/sub_categories");
-  // console.log(category);
-  // console.log(subCategory);
   return (
     <html lang="en">
       <head>
@@ -61,7 +59,7 @@ export default async function RootLayout({
             <div className="icons">
             <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
             <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
-            <Link href="#"><i className="fa-solid fa-user"></i></Link>
+            <Link href="/user/login"><i className="fa-solid fa-user"></i></Link>
             </div>
           </div>
         </header>

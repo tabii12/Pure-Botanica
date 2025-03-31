@@ -13,7 +13,7 @@ main {
     padding: 40px 20px;
 }
 
-.container {
+.containerrr {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,6 +21,12 @@ main {
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
 
 /* form Box */
 .form-box {
