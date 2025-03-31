@@ -34,6 +34,7 @@ export default function LoginPage() {
             // Lưu token và role vào localStorage
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.user.role); // Lưu role từ API
+            localStorage.setItem("email", data.user.email);
     
             // Chuyển hướng theo quyền
             if (data.user.role === "admin") {
