@@ -5,7 +5,7 @@ export default function ProductPage() {
         <div>
             <div className="title_container">
                 <h1>SẢN PHẨM</h1>
-                <a href="index.php?page=addproduct" className="add-product-btn">Thêm Sản Phẩm +</a>
+                <a href="/admin/add_product" className="add-product-btn">Thêm Sản Phẩm +</a>
             </div>
             
             <div className="table-container">

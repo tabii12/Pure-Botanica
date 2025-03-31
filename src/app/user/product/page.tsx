@@ -45,7 +45,7 @@ export default function ProductPage() {
                     <div className="productGrid">
                         {[...Array(9)].map((_, index) => (
                             <div className="productItem" key={index}>
-                                <img src=".//images/kemtrangdiem.png" alt="Sản phẩm" />
+                                <img src="./images/kemtrangdiem.png" alt="Sản phẩm" />
                                 <h4>Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h4>
                                 <div className="product-card">
                                     <p className="price">140.000đ</p>
