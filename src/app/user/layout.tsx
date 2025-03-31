@@ -24,8 +24,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const category: Category[] = await getCategories("http://localhost:3001/categories");
-  const subCategory: SubCategory[] = await getSubCategories("http://localhost:3001/sub_categories");
+  const category: Category[] = await getCategories("https://db-pure-bonanica.onrender.com/categories");
+  const subCategory: SubCategory[] = await getSubCategories("https://db-pure-bonanica.onrender.com/sub_categories");
   // console.log(category);
   // console.log(subCategory);
 
