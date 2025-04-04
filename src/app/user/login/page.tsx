@@ -15,27 +15,27 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-    
+
         try {
             const res = await fetch("https://db-pure-bonanica.onrender.com/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await res.json();
             console.log("API Response:", data); // Kiểm tra dữ liệu trả về
-    
+
             if (!res.ok) {
                 setError(data.message || "Đăng nhập thất bại");
                 return;
             }
-    
+
             // Lưu token và role vào localStorage
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.user.role); // Lưu role từ API
             localStorage.setItem("email", data.user.email);
-    
+
             // Chuyển hướng theo quyền
             if (data.user.role === "admin") {
                 router.push("/admin");
@@ -47,8 +47,8 @@ export default function LoginPage() {
             setError(err.message || "Có lỗi xảy ra, vui lòng thử lại!");
         }
     };
-    
-    
+
+
     return (
         <div className="containerrr">
             <div className="form-box">
@@ -56,7 +56,7 @@ export default function LoginPage() {
 
                 {/* Nút Đăng nhập với Google */}
                 <button className="google-btn">
-                    <img src="/images/icons8-google-48.png" alt="Google Logo" /> Đăng nhập với Google 
+                    <img src="/images/icons8-google-48.png" alt="Google Logo" /> Đăng nhập với Google
                 </button>
 
                 <div className="divider">
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
                 {/* Form Đăng Nhập */}
                 <form action="#" method="post" onSubmit={handleSubmit}>
-                    <input type="email" placeholder="Myname@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required /><br />   
+                    <input type="email" placeholder="Myname@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required /><br />
                     <input type="password" placeholder="Mật khẩu" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
                     <div className="forgot-password">
