@@ -41,7 +41,7 @@ export default async function RootLayout({
         <header>
           <div className="container header-container">
             <div className="logo">
-            <Link href="/user"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
+              <Link href="/user"><img src="\images\logo.png" alt="Pure Botanica" /></Link>
             </div>
             <nav>
               <Link href="/user">Trang chủ</Link>
@@ -57,9 +57,9 @@ export default async function RootLayout({
               <Link href="#">Tin tức</Link>
             </nav>
             <div className="icons">
-            <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
-            <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
-            <Link href="/user/login"><i className="fa-solid fa-user"></i></Link>
+              <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
+              <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
+              <Link href="/user/login"><i className="fa-solid fa-user"></i></Link>
             </div>
           </div>
         </header>
@@ -127,7 +127,7 @@ export default async function RootLayout({
 }
 
 async function getCategories(url: string): Promise<Category[]> {
-  let res = await fetch(url, { cache: "no-store" }); 
+  let res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return [];
 
   let data = await res.json();

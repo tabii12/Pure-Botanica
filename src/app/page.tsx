@@ -12,9 +12,5 @@ export default function Home() {
     router.push("/user");
   }, [router]);
 
-  useEffect(() => {
-    window.location.href = "http://localhost:3000/user";
-  }, []);
-
   return null; // Không cần render gì trên trang này
 }
