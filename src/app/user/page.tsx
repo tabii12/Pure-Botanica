@@ -27,7 +27,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product1.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Kem Dưỡng Da Cao Cấp</h3>
@@ -37,7 +37,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product2.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Serum Dưỡng Ẩm Chuyên Sâu</h3>
@@ -47,7 +47,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product3.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Sữa Rửa Mặt Thiên Nhiên</h3>
