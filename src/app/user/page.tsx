@@ -153,7 +153,7 @@ export default function Home() {
               <div className="best-selling-card">
                 <div className="best-selling-badge">Hot</div>
                 <div className="best-selling-image">
-                  <img src="#" alt="Product Image" />
+                  <img src="/api/placeholder/200/200" alt="Product Image" />
                 </div>
                 <div className="best-selling-details">
                   <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
@@ -163,7 +163,7 @@ export default function Home() {
               <div className="best-selling-card">
                 <div className="best-selling-badge">Hot</div>
                 <div className="best-selling-image">
-                  <img src="#" alt="Product Image" />
+                  <img src="/api/placeholder/200/200" alt="Product Image" />
                 </div>
                 <div className="best-selling-details">
                   <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
@@ -173,7 +173,7 @@ export default function Home() {
               <div className="best-selling-card">
                 <div className="best-selling-badge">Hot</div>
                 <div className="best-selling-image">
-                  <img src="#" alt="Product Image" />
+                  <img src="/api/placeholder/200/200" alt="Product Image" />
                 </div>
                 <div className="best-selling-details">
                   <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
