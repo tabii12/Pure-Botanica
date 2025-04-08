@@ -6,7 +6,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <body>
         <div className="sidebar">
           <div className="logo">
+            <a href="/admin">
             <img style={{ width: "200px" }} src="/images/logo.png" alt="Logo" />
+            </a>
           </div>
 
           <div className="menu">
