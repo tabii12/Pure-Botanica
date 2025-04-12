@@ -1,4 +1,6 @@
 export interface Product {
+    category: string;
+    quantity: number;
     ingredients: string[];
     usage_instructions: string[];
     special: string[];
