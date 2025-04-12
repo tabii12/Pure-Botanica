@@ -3,13 +3,8 @@ import "./product.css";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Product } from "@/app/components/product_interface";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  images: string[];
-}
 
 interface MenuItem {
   title: string;
