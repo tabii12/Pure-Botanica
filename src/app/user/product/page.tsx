@@ -35,7 +35,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("https://db-pure-bonanica.onrender.com/products");
+        const response = await fetch("http://localhost:3002/products");
         const data: Product[] = await response.json();
         setProducts(data);
         setFilteredProducts(data);
@@ -105,7 +105,7 @@ export default function ProductPage() {
     return shuffled.slice(0, count);
   };
 
-  const bestSellingProducts = getRandomProducts(products, 6);
+  const bestSellingProducts = getRandomProducts(products, 4);
 
   return (
     <div>
@@ -154,7 +154,7 @@ export default function ProductPage() {
         </aside>
 
         <section className="productContainer max-w-6xl mx-auto py-8">
-          <div className="productGrid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="productGrid ">
             {currentProducts.length > 0 ? (
               currentProducts.map((product) => (
                 <Link

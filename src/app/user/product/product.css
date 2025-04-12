@@ -30,7 +30,7 @@
     display: flex;
     align-items: flex-start;
     gap: 20px;
-    max-width: 1200px;
+    max-width: 1290px;
     margin: auto;
 }
 
@@ -103,9 +103,10 @@
 
 .productGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    grid-template-columns: repeat(3, 1fr); /* luôn 3 cột */
     gap: 20px;
 }
+
 .productGrid a{
     text-decoration: none;
     color: black;
@@ -409,7 +410,7 @@
 }
 
 .botanical-gallery {
-    max-width: 1200px;
+    max-width: 1290px;
     margin: 60px auto;
     display: flex;
     gap: 30px;
@@ -473,7 +474,7 @@
 }
 
 .best-selling-products {
-    max-width: 1200px;
+    max-width: 1290px;
     margin: 0 auto;
 }
 
@@ -574,7 +575,7 @@
 }
 
 .grid.wide {
-    max-width: 1200px;
+    max-width: 1290px;
     margin: 0 auto;
 }
 
