@@ -20,19 +20,19 @@ const formatPrice = (price: number): string => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 };
 
-// Hàm kiểm tra xem đường dẫn có phải là đường dẫn tĩnh hợp lệ (bắt đầu bằng /)
+
 const isStaticPath = (path: string): boolean => {
   return path.startsWith("/");
-};
+};  
 
-// Hàm chuẩn hóa URL hình ảnh
+
 const getImageUrl = (image: string): string => {
-    // Nếu image là đường dẫn tĩnh hợp lệ (bắt đầu bằng /), trả về nguyên bản
+   
     if (image.startsWith("/")) {
       return image;
     }
-    // Nếu không, giả sử image là tên file (như link_hinh_anh_1.jpg) và thêm tiền tố /images/
-    return `/images/${image}`; // Biến link_hinh_anh_1.jpg thành /images/link_hinh_anh_1.jpg
+   
+    return `/images/${image}`; 
   };
 
 export default function ProductPage() {
@@ -41,7 +41,7 @@ export default function ProductPage() {
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const productsPerPage = 9; // Số sản phẩm mỗi trang
-
+ 
   // Lấy dữ liệu từ API
   useEffect(() => {
     const fetchProducts = async () => {
@@ -57,20 +57,15 @@ export default function ProductPage() {
 
     fetchProducts();
   }, []);
-
-  // Tính toán phân trang
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-
-  // Đảm bảo currentPage không vượt quá totalPages
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages);
     }
   }, [filteredProducts, currentPage, totalPages]);
-
   const menuItems: MenuItem[] = [
     {
       title: "Trang điểm",
@@ -103,60 +98,63 @@ export default function ProductPage() {
       subItems: ["Tắm em bé", "Chăm sóc bé"],
     },
   ];
-
   const toggleSubMenu = (title: string) => {
     setOpenSubMenu(openSubMenu === title ? null : title);
   };
-
   const filterProducts = (subItem: string) => {
     const filtered = products.filter((product) => product.name.includes(subItem));
     setFilteredProducts(filtered.length > 0 ? filtered : products);
     setCurrentPage(1);
   };
-
-  // Lấy 6 sản phẩm ngẫu nhiên cho phần "Có thể bạn sẽ thích"
   const getRandomProducts = (products: Product[], count: number): Product[] => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
-
   const bestSellingProducts = getRandomProducts(products, 6);
-
   return (
     <div> {/* Bỏ Fragment và chỉ giữ lại div */}
       <section className="productBanner">
-        <img src="/images/bandbanner.png" alt="Banner" />
+        <img src="/images/productBanner.png" alt="Banner" />
       </section>
       <h1 className="productTitle">Danh sách sản phẩm</h1>
       <div className="containerBox">
         <aside className="productSidebar">
           <h3>DANH MỤC SẢN PHẨM</h3>
           <ul className="menu">
-            {menuItems.map((item, index) => (
-              <li
-                key={index}
-                className={item.subItems ? "sub-menu1" : ""}
-                onClick={item.subItems ? () => toggleSubMenu(item.title) : undefined}
-              >
-                <i
-                  className="fa-solid fa-caret-down"
-                  style={{
-                    transform: openSubMenu === item.title ? "rotate(0deg)" : "rotate(-90deg)",
-                  }}
-                ></i>{" "}
-                {item.title}
-                {item.subItems && openSubMenu === item.title && (
-                  <ul className="sub-menu">
-                    {item.subItems.map((subItem, subIndex) => (
-                      <li key={subIndex} onClick={() => filterProducts(subItem)}>
-                        - {subItem}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+  {menuItems.map((item, index) => {
+    const isActive = openSubMenu === item.title;
+
+    return (
+      <li
+        key={index}
+        className={`menu-item ${item.subItems ? "sub-menu1" : ""} ${isActive ? "active" : ""}`}
+        onClick={item.subItems ? () => toggleSubMenu(item.title) : undefined}
+      >
+        <span className="menu-title">
+          <i
+            className="fa-solid fa-caret-down"
+            style={{
+              transform: isActive ? "rotate(0deg)" : "rotate(-90deg)",
+              color: isActive ? "#8D5524" : "#8D5524", // giữ icon luôn nâu nếu bạn muốn
+            }}
+          ></i>{" "}
+          <span style={{ color: isActive ? "#8D5524" : "#357E38" }}>{item.title}</span>
+        </span>
+
+        {item.subItems && isActive && (
+          <ul className="sub-menu">
+            {item.subItems.map((subItem, subIndex) => (
+              <li key={subIndex} onClick={() => filterProducts(subItem)}>
+                - {subItem}
               </li>
             ))}
           </ul>
+        )}
+      </li>
+    );
+  })}
+</ul>
+
         </aside>
 
         <section className="productContainer max-w-6xl mx-auto py-8">
@@ -175,7 +173,7 @@ export default function ProductPage() {
                   <div className="p-4">
                     <h4 className="text-lg font-semibold text-gray-800">{product.name}</h4>
                     <div className="product-card flex justify-between items-center mt-2">
-                      <p className="price text-red-500 font-bold">{formatPrice(product.price)}</p>
+                      <p className="price text-red-500 font-bold">{formatPrice(product.price)}</p>  
                       <a href="#" title="Thêm vào Giỏ Hàng" className="text-gray-600 hover:text-green-500">
                         <i className="fas fa-shopping-cart cartIcon"></i>
                       </a>

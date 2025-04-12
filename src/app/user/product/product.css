@@ -71,6 +71,28 @@
     font-size: 13px;
     color: #555;
 }
+.productSidebar .menu-item {
+   
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .productSidebar .menu-item.active {
+    color: #8D5524;
+  }
+  
+  .productSidebar .menu-item i {
+    margin-right: 6px;
+    font-size: 16px;
+  }
+  
+  .productSidebar .sub-menu li:hover {
+    color: #357E38;
+  }
+  
 
 /* ----- DANH SÁCH SẢN PHẨM ----- */
 .productContainer {
