@@ -33,13 +33,19 @@ export default function Category() {
       });
 
       if (res.ok) {
-        setCategories((prev) => prev.filter((cat) => cat.id !== id));
+        setCategories((prev) => prev.filter((cat) => cat._id !== id));
+        alert("Xóa danh mục thành công!");
       } else {
-        console.error("Xóa không thành công");
+        alert("Xóa danh mục thất bại!");
       }
     } catch (error) {
       console.error("Lỗi khi xóa danh mục:", error);
+      alert("Đã xảy ra lỗi khi xóa danh mục.");
     }
+  };
+
+  const handleEdit = (id: string) => {
+    window.location.href = `/admin/edit_category?id=${id}`;
   };
 
   if (loading) {
@@ -65,15 +71,18 @@ export default function Category() {
             </thead>
             <tbody>
               {categories.map((category) => (
-                <tr key={category.id}>
+                <tr key={category._id}>
                   <td>{category.name}</td>
                   <td>
-                    <button className="btn-edit">
-                      <a href={`/admin/edit_category?id=${category.id}`}>Chỉnh sửa</a>
+                    <button
+                      className="btn-edit"
+                      onClick={() => handleEdit(category._id)}
+                    >
+                      Chỉnh sửa
                     </button>
                     <button
                       className="btn-remove"
-                      onClick={() => handleDelete(category.id)}
+                      onClick={() => handleDelete(category._id)}
                     >
                       Xóa
                     </button>
