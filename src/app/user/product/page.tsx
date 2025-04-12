@@ -158,7 +158,7 @@ export default function ProductPage() {
             {currentProducts.length > 0 ? (
               currentProducts.map((product) => (
                 <Link
-                  href={`/product/${product._id}`}
+                  href={`/user/detail/${product._id}`}
                   key={product._id}
                   className="productItem bg-white shadow-md rounded-lg overflow-hidden"
                 >
@@ -224,7 +224,7 @@ export default function ProductPage() {
         <div className="best-selling-grid">
           {bestSellingProducts.length > 0 ? (
             bestSellingProducts.map((product) => (
-              <a href={`/product/${product._id}`} key={product._id}>
+              <a href={`/user/detail/${product._id}`} key={product._id}>
                 <div className="best-selling-card">
                   <div className="best-selling-badge">Sale</div>
                   <div className="best-selling-image">

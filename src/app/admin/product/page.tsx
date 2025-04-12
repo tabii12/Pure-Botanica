@@ -20,9 +20,8 @@ export default function ProductPage() {
                             <th>Hành động</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {[...Array(4)].map((_, index) => (
-                            <tr key={index}>
+                    <tbody>  
+                            <tr >
                                 <td><img src="image/kemtrangdiem.png" alt="Sản phẩm 1" width="50" /></td>
                                 <td>Kem nghệ dưỡng da</td>
                                 <td>Kem dưỡng da</td>
@@ -33,7 +32,6 @@ export default function ProductPage() {
                                     <button className="delete-btn"><i className="fa-regular fa-trash-can"></i></button>
                                 </td>
                             </tr>
-                        ))}
                     </tbody>
                 </table>
             </div>
