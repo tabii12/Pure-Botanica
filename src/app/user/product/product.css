@@ -500,11 +500,11 @@
     display: none; 
 }
 .best-selling-card {
-    height: 430px;
-    width: 300px;
+    height: 450px;
+    width: 330px;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #C0BCBC ;
     overflow: hidden;
     transition: transform 0.3s ease;
     position: relative;
@@ -515,13 +515,11 @@
 
 }
 
-.best-selling-card:hover {
-    transform: scale(1.05);
-}
+
 
 .best-selling-badge {
     position: absolute;
-    top: 10px;
+    top: 20px;
     width: 60px;
     height: 30px;
     background-color: #2a7e19;
@@ -533,8 +531,9 @@
 }
 
 .best-selling-image {
+    margin-top: 30px;
     width: 100%;
-    height: 300px;
+    height: 260px;
     background-color: #FFFFFF;
     display: flex;
     justify-content: center;
@@ -542,24 +541,25 @@
 }
 
 .best-selling-details {
-    padding: 15px;
+    padding: 30px;
 }
 
 .best-selling-name {
-    font-size: 16px;
+    font-size: 18px;
     margin-top: 10px;
     color: #333;
 }
 
 .best-selling-price {
-    font-size: 18px;
+    font-size: 20px;
     margin-top: 25px;
     font-weight: bold;
     color: #2a7e19;
 }
 
 .best-selling-image img {
-    width: 80%;
+    width: 260px;
+    height: 270px;
     background-color: #e0e0e0;
     display: flex;
     justify-content: center;
