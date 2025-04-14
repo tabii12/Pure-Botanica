@@ -1,14 +1,48 @@
+"use client";
+
 import Image from "next/image";
 import "./page.css";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    "/images/bannernav1.png",
+    "/images/bannernav2.png",
+    "/images/bannernav3.png",
+    "/images/bannernav4.png",
+    "/images/bannernav5.png",
+    "/images/bannernav6.png",
+  ];
+
+  // Tự động chuyển slide sau mỗi 5 giây
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  // Xử lý khi nhấn mũi tên trái
+  const goToPrevious = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  // Xử lý khi nhấn mũi tên phải
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  // Xử lý khi nhấn vào chấm (dot)
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
   return (
     <div>
       <div className="container">
         <div className="banner">
-          <img src="/images//mainbanner.png" alt="Main Banner" />
+          <img src="/images/bannerhome1.png" alt="Main Banner" />
         </div>
-
         <section className="new-products-section">
           {/* Product row with text and slider in the same row */}
           <div className="products-row">
@@ -27,7 +61,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product1.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Kem Dưỡng Da Cao Cấp</h3>
@@ -37,7 +71,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product2.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Serum Dưỡng Ẩm Chuyên Sâu</h3>
@@ -47,7 +81,7 @@ export default function Home() {
                 <div className="new-product-card">
                   <div className="new-product-badge">New</div>
                   <div className="new-product-image">
-                    <img src="/images/new_product3.png" alt="New Product" />
+                    <img src="#" alt="New Product" />
                   </div>
                   <div className="new-product-details">
                     <h3 className="new-product-name">Sữa Rửa Mặt Thiên Nhiên</h3>
@@ -64,6 +98,7 @@ export default function Home() {
               <h4 className="feature-title">Giao hàng toàn quốc
                 
               </h4>
+              <br /><h4 className="feture-2">Miễn phí giao hàng </h4>
             </div>
             <div className="feature-card">
               <h4 className="feature-title">Bảo đảm chất lượng
@@ -85,43 +120,31 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Hero section */}
-        <div className="hero-section-rela">
-          <section className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-title">Tự nhiên tỏa sáng cùng bộ trang điểm thiên nhiên</h1>
-            </div>
-          </section>
-
-          <div className="category-nav">
-            <a href="#" className="category-item">
-              <img src="/images//botrangdiem.png" alt="Trang điểm" className="category-icon" />
-              <p className="category-label">Bộ trang điểm</p>
-            </a>
-            <a href="#" className="category-item">
-              <img src="/images//chamsocda.png" alt="Chăm sóc da" className="category-icon" />
-              <p className="category-label">Chăm sóc da</p>
-            </a>
-            <a href="#" className="category-item">
-              <img src="/images//chamsoccothe.png" alt="Chăm sóc cơ thể" className="category-icon" />
-              <p className="category-label">Chăm sóc cơ thể</p>
-            </a>
-            <a href="#" className="category-item">
-              <img src="/images//chamsoctoc.png" alt="Chăm sóc tóc" className="category-icon" />
-              <p className="category-label">Chăm sóc tóc</p>
-            </a>
-            <a href="#" className="category-item">
-              <img src="/images//huongthom.png" alt="Hương thơm" className="category-icon" />
-              <p className="category-label">Hương thơm</p>
-            </a>
-            <a href="#" className="category-item">
-              <img src="/images//mevabe.png" alt="Mẹ và bé" className="category-icon" />
-              <p className="category-label">Mẹ và bé</p>
-            </a>
+        <section className="banner-slideshow">
+          {slides.map((slide, index) => (
+            <img
+              key={index}
+              src={slide}
+              alt={`Banner ${index + 1}`}
+              className={`slide ${index === currentSlide ? "active" : ""}`}
+            />
+          ))}
+          <div className="slideshow-dots">
+            {slides.map((_, index) => (
+              <div
+                key={index}
+                className={`dot ${index === currentSlide ? "active" : ""}`}
+                onClick={() => goToSlide(index)}
+              ></div>
+            ))}
           </div>
-        </div>
-
+          <div className="arrow left" onClick={goToPrevious}>
+          <i className="fa-solid fa-arrow-left"></i>
+          </div>
+          <div className="arrow right" onClick={goToNext}>
+          <i className="fa-solid fa-arrow-right"></i>
+          </div>
+        </section>
         <div className="container">
           <section className="botanical-gallery">
             <div className="botanical-frame-left">
@@ -202,6 +225,15 @@ export default function Home() {
               </p>
               <a href="#" className="brand-cta">Tìm hiểu thêm</a>
             </div>
+          </div>
+        </div>
+        <div className="brands">
+          <h2>Thương hiệu nổi bật</h2>
+          <div className="brands2">
+          <img src="/images/comem 1.png" alt="" />
+          <img src="/images/cocoon 1.png" alt="" />
+          <img src="/images/Logo_Bio_LAK 1.png" alt="" />
+          <img src="/images/Logo-Thorakao-Ngang-500-1 1.png" alt="" />
           </div>
         </div>
       </div>

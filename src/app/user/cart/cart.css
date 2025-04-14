@@ -133,21 +133,54 @@ td {
     border-radius: 12px;
     color: white;
     font-weight: 600;
-    width: 23%;
+    width: 100px;
+    height: 50px;
 }
 
-.summary p {
+.summary {
+    background-color: #fefefe;
+    border: 1px solid #e0e0e0;
+    padding: 20px 25px;
+    border-radius: 12px;
+    max-width: 400px;
+    margin: 30px auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .summary p,
+  .summary .total2 {
     display: flex;
     justify-content: space-between;
-    font-size: 16px;
-    padding: 5px 0;
-}
-
-.total {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  
+  .summary p span,
+  .summary .total2 span {
+    text-align: right;
+    min-width: 120px;
+    display: inline-block;
+  }
+  
+  .summary .total {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px dashed #ccc;
+  }
+  
+  .summary .total2 {
     font-size: 18px;
-    font-weight: bold;
-}
-
+    color: #111;
+    font-weight: 600;
+  }
+  
+  .summary .total2 span {
+    color: #e60023;
+  }
+  
+  
 .checkout {
     background: #357E38;
     color: white;
@@ -156,12 +189,6 @@ td {
     font-size: 18px;
     font-weight: bold;
     margin-top: 10px;
-}
-.total2{
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    padding: 5px 0;
 }
 
 /* Nút tiếp tục mua sắm */
