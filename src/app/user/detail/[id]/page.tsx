@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import "./detail.css";
+import styles from "./Detail.module.css"; // Sửa import để dùng CSS Modules đúng cách
 import { Product } from "@/app/components/product_interface";
-
-
 
 const formatPrice = (price: number): string => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
@@ -40,20 +38,42 @@ export default function DetailPage() {
 
   const increaseQty = () => setQuantity((prev) => prev + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const addToCart = () => {
+    if (!product) return;
+
+    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
+
+    if (existingItemIndex !== -1) {
+      cartItems[existingItemIndex].quantity += quantity;
+    } else {
+      cartItems.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || "",
+        quantity,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+    alert("Đã thêm vào giỏ hàng!");
+  };
 
   if (loading) return <p className="text-center py-10">Đang tải chi tiết sản phẩm...</p>;
   if (!product) return <p className="text-center py-10">Không tìm thấy sản phẩm.</p>;
 
   return (
     <>
-      <div className="container">
-        <section className="product-section">
+      <div className={styles.container}>
+        <section className={styles["product-section"]}>
           {/* Thumbnails */}
-          <div className="product-thumbnails">
+          <div className={styles["product-thumbnails"]}>
             {product.images?.map((image, index) => (
               <div
                 key={index}
-                className={`thumbnail ${index === currentImageIndex ? "active" : ""}`}
+                className={`${styles.thumbnail} ${index === currentImageIndex ? styles.active : ""}`}
                 onClick={() => setCurrentImageIndex(index)}
               >
                 <img src={getImageUrl(image)} alt={`${product.name} thumbnail ${index + 1}`} />
@@ -62,18 +82,18 @@ export default function DetailPage() {
           </div>
 
           {/* Main Image */}
-          <div className="product-image-container">
-            <div className="product-main-image">
+          <div className={styles["product-image-container"]}>
+            <div className={styles["product-main-image"]}>
               <img
                 src={getImageUrl(product.images?.[currentImageIndex] || "")}
                 alt={product.name}
               />
             </div>
-            <div className="product-dots">
+            <div className={styles["product-dots"]}>
               {product.images?.map((_, index) => (
                 <div
                   key={index}
-                  className={`dot ${index === currentImageIndex ? "active" : ""}`}
+                  className={`${styles.dot} ${index === currentImageIndex ? styles.active : ""}`}
                   onClick={() => setCurrentImageIndex(index)}
                 ></div>
               ))}
@@ -81,83 +101,96 @@ export default function DetailPage() {
           </div>
 
           {/* Product Info */}
-          <div className="product-info">
-            <h1 className="product-title">{product.name}</h1>
-            <p className="product-price">{formatPrice(product.price)}</p>
-            <p className="product-description">
+          <div className={styles["product-info"]}>
+            <h1 className={styles["product-title"]}>{product.name}</h1>
+            <p className={styles["product-price"]}>{formatPrice(product.price)}</p>
+            <p className={styles["product-description"]}>
               {product.description || "Chưa có mô tả cho sản phẩm này."}
             </p>
 
-            <div className="product-features">
+            <div className={styles["product-features"]}>
               {product.special?.map((feature, index) => (
-                <div key={index} className="feature">
+                <div key={index} className={styles.feature}>
                   {feature}
                 </div>
               ))}
             </div>
 
-            <div className="quantity-controls">
-              <div className="quantity-wrapper">
-                <button className="quantity-btn decrease" onClick={decreaseQty}>−</button>
-                <input type="text" className="quantity-input" value={quantity} readOnly />
-                <button className="quantity-btn increase" onClick={increaseQty}>+</button>
+            <div className={styles["quantity-controls"]}>
+              <div className={styles["quantity-wrapper"]}>
+                <button className={`${styles["quantity-btn"]} ${styles.decrease}`} onClick={decreaseQty}>
+                  −
+                </button>
+                <input
+                  type="text"
+                  className={styles["quantity-input"]}
+                  value={quantity}
+                  readOnly
+                />
+                <button className={`${styles["quantity-btn"]} ${styles.increase}`} onClick={increaseQty}>
+                  +
+                </button>
               </div>
-              <button className="add-to-cart">Thêm vào giỏ hàng</button>
+              <button className={styles["add-to-cart"]} onClick={addToCart}>
+                Thêm vào giỏ hàng
+              </button>
             </div>
           </div>
         </section>
 
         {/* Additional Info */}
-        <div className="product-info">
-          <h2>Thông tin sản phẩm:</h2>
-          <h3>Thành phần:</h3>
+        <div className={styles["product-info"]}>
+          <h2 className={styles["product-info-title"]}>Thông tin sản phẩm:</h2>
+          <h3 className={styles["ingredients-title"]}>Thành phần:</h3>
           <p>{product.ingredients?.join(", ") || "Không có thông tin thành phần."}</p>
 
-          <h3>Hướng dẫn sử dụng:</h3>
-          <ul>
+          <h3 className={styles["usage-title"]}>Hướng dẫn sử dụng:</h3>
+          <ul className={styles["usage-list"]}>
             {product.usage_instructions?.map((instruction, index) => (
-              <li key={index}>{instruction}</li>
+              <li key={index} className={styles["usage-item"]}>
+                {instruction}
+              </li>
             ))}
           </ul>
         </div>
       </div>
 
       {/* Customer Reviews */}
-      <div className="cr">
-        <div className="customer-review">
-          <h1>Đánh giá từ khách hàng</h1>
-          <div className="rating-summary">
-            <span className="average-rating">5.0</span>
-            <div className="stars">★★★★★</div>
-            <span className="review-count">Theo 2 đánh giá</span>
+      <div className={styles.cr}>
+        <div className={styles["customer-review"]}>
+          <h1 className={styles["review-main-title"]}>Đánh giá từ khách hàng</h1>
+          <div className={styles["rating-summary"]}>
+            <span className={styles["average-rating"]}>5.0</span>
+            <div className={styles.stars}>★★★★★</div>
+            <span className={styles["review-count"]}>Theo 2 đánh giá</span>
           </div>
 
-          <div className="review">
-            <h2>Huy Bảo</h2>
-            <div className="stars">★★★★★</div>
-            <span className="review-date">Ngày: 20/03/2025</span>
-            <p className="comment">ok</p>
+          <div className={styles.review}>
+            <h2 className={styles["review-title"]}>Huy Bảo</h2>
+            <div className={styles.stars}>★★★★★</div>
+            <span className={styles["review-date"]}>Ngày: 20/03/2025</span>
+            <p className={styles.comment}>ok</p>
           </div>
 
-          <div className="review">
-            <h2>Huy Bảo</h2>
-            <div className="stars">★★★★☆</div>
-            <span className="review-date">Ngày: 22/03/2025</span>
-            <p className="comment">
+          <div className={styles.review}>
+            <h2 className={styles["review-title"]}>Huy Bảo</h2>
+            <div className={styles.stars}>★★★★☆</div>
+            <span className={styles["review-date"]}>Ngày: 22/03/2025</span>
+            <p className={styles.comment}>
               Mùi hương: thơm. Kết cấu: nhẹ nhàng cho da, giá này là khá đắt. Hơn 300k cho 300g, nếu có sale thì mình cũng sẽ cân nhắc.
             </p>
           </div>
 
-          <button className="write-review">Viết đánh giá</button>
+          <button className={styles["write-review"]}>Viết đánh giá</button>
         </div>
       </div>
 
       {/* Contact Section */}
-      <section className="product-contact-section">
-        <h2 className="contact-title">
+      <section className={styles["product-contact-section"]}>
+        <h2 className={styles["contact-section-title"]}>
           Không tìm thấy được dòng sản phẩm mà bạn cần<br />hoặc thích hợp với da của bạn?
         </h2>
-        <button className="contact-button">Liên hệ với chúng tôi</button>
+        <button className={styles["contact-button"]}>Liên hệ với chúng tôi</button>
       </section>
     </>
   );

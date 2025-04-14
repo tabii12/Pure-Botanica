@@ -1,10 +1,9 @@
 "use client";
-import "./product.css";
+import styles from "./Product.module.css";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/app/components/product_interface";
-
 
 interface MenuItem {
   title: string;
@@ -104,25 +103,27 @@ export default function ProductPage() {
 
   return (
     <div>
-      <section className="productBanner">
-        <img src="/images/productBanner.png" alt="Banner" />
+      <section className={styles.productBanner}>
+        <img src="/images/productBanner.png" alt="Banner" className={styles["banner-image"]} />
       </section>
 
-      <h1 className="productTitle">Danh sách sản phẩm</h1>
+      <h1 className={styles["product-main-title"]}>Danh sách sản phẩm</h1>
 
-      <div className="containerBox">
-        <aside className="productSidebar">
-          <h3>DANH MỤC SẢN PHẨM</h3>
-          <ul className="menu">
+      <div className={styles.containerBox}>
+        <aside className={styles.productSidebar}>
+          <h3 className={styles["sidebar-title"]}>DANH MỤC SẢN PHẨM</h3>
+          <ul className={styles["menu-list"]}>
             {menuItems.map((item) => {
               const isActive = openSubMenu === item.title;
               return (
                 <li
                   key={item.title}
-                  className={`menu-item ${item.subItems ? "sub-menu1" : ""} ${isActive ? "active" : ""}`}
+                  className={`${styles["menu-list-item"]} ${item.subItems ? styles["sub-menu1"] : ""} ${
+                    isActive ? styles.active : ""
+                  }`}
                   onClick={item.subItems ? () => toggleSubMenu(item.title) : undefined}
                 >
-                  <span className="menu-title">
+                  <span className={styles["menu-title"]}>
                     <i
                       className="fa-solid fa-caret-down"
                       style={{
@@ -134,9 +135,13 @@ export default function ProductPage() {
                   </span>
 
                   {item.subItems && isActive && (
-                    <ul className="sub-menu">
+                    <ul className={styles["sub-menu-list"]}>
                       {item.subItems.map((subItem) => (
-                        <li key={subItem} onClick={() => filterProducts(subItem)}>
+                        <li
+                          key={subItem}
+                          className={styles["sub-menu-list-item"]}
+                          onClick={() => filterProducts(subItem)}
+                        >
                           - {subItem}
                         </li>
                       ))}
@@ -148,14 +153,14 @@ export default function ProductPage() {
           </ul>
         </aside>
 
-        <section className="productContainer max-w-6xl mx-auto py-8">
-          <div className="productGrid ">
+        <section className={styles.productContainer}>
+          <div className={styles.productGrid}>
             {currentProducts.length > 0 ? (
               currentProducts.map((product) => (
                 <Link
                   href={`/user/detail/${product._id}`}
                   key={product._id}
-                  className="productItem bg-white shadow-md rounded-lg overflow-hidden"
+                  className={`${styles.productItem} ${styles["product-link"]}`}
                 >
                   <div>
                     <Image
@@ -163,14 +168,17 @@ export default function ProductPage() {
                       alt={product.name}
                       width={300}
                       height={200}
-                      className="w-full h-48 object-cover"
+                      className={styles["product-image"]}
                     />
-                    <div className="p-4">
-                      <h4 className="text-lg font-semibold text-gray-800">{product.name}</h4>
-                      <div className="product-card flex justify-between items-center mt-2">
-                        <p className="price text-red-500 font-bold">{formatPrice(product.price)}</p>
-                        <span title="Thêm vào Giỏ Hàng" className="text-gray-600 hover:text-green-500 cursor-pointer">
-                          <i className="fas fa-shopping-cart cartIcon"></i>
+                    <div className={styles["product-details"]}>
+                      <h4 className={styles["product-item-name"]}>{product.name}</h4>
+                      <div className={styles["product-card"]}>
+                        <p className={styles.price}>{formatPrice(product.price)}</p>
+                        <span
+                          title="Thêm vào Giỏ Hàng"
+                          className={styles.cartIcon}
+                        >
+                          <i className="fas fa-shopping-cart"></i>
                         </span>
                       </div>
                     </div>
@@ -178,14 +186,14 @@ export default function ProductPage() {
                 </Link>
               ))
             ) : (
-              <p className="text-center col-span-full">Đang tải sản phẩm...</p>
+              <p className={styles["no-products"]}>Đang tải sản phẩm...</p>
             )}
           </div>
 
           {totalPages > 1 && (
-            <div className="productPagination flex justify-center mt-8 space-x-2">
+            <div className={styles.productPagination}>
               <button
-                className="page-btn px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                className={`${styles["page-btn"]} ${currentPage === 1 ? styles.disabled : ""}`}
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
               >
@@ -194,16 +202,18 @@ export default function ProductPage() {
               {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={`page-${index + 1}`}
-                  className={`page-btn px-4 py-2 ${
-                    currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-                  } rounded`}
+                  className={`${styles["page-btn"]} ${
+                    currentPage === index + 1 ? styles.active : ""
+                  }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
                   {index + 1}
                 </button>
               ))}
               <button
-                className="page-btn px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                className={`${styles["page-btn"]} ${
+                  currentPage === totalPages ? styles.disabled : ""
+                }`}
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
               >
@@ -214,32 +224,36 @@ export default function ProductPage() {
         </section>
       </div>
 
-      <div className="best-selling-products">
-        <h3 className="SliderTitle">Có thể bạn sẽ thích</h3>
-        <div className="best-selling-grid">
+      <div className={styles["best-selling-products"]}>
+        <h3 className={styles["slider-title"]}>Có thể bạn sẽ thích</h3>
+        <div className={styles["best-selling-grid"]}>
           {bestSellingProducts.length > 0 ? (
             bestSellingProducts.map((product) => (
-              <a href={`/user/detail/${product._id}`} key={product._id}>
-                <div className="best-selling-card">
-                  <div className="best-selling-badge">Sale</div>
-                  <div className="best-selling-image">
+              <Link
+                href={`/user/detail/${product._id}`}
+                key={product._id}
+                className={styles["best-selling-link"]}
+              >
+                <div className={styles["best-selling-card"]}>
+                  <div className={styles["best-selling-badge"]}>Sale</div>
+                  <div className={styles["best-selling-image"]}>
                     <Image
                       src={getImageUrl(product.images?.[0] || "/images/Apple-Pay.png")}
                       alt={product.name}
                       width={200}
                       height={200}
-                      className="w-full h-40 object-cover"
+                      className={styles["best-selling-product-image"]}
                     />
                   </div>
-                  <div className="best-selling-details">
-                    <h3 className="best-selling-name">{product.name}</h3>
-                    <p className="best-selling-price">{formatPrice(product.price)}</p>
+                  <div className={styles["best-selling-details"]}>
+                    <h3 className={styles["best-selling-product-name"]}>{product.name}</h3>
+                    <p className={styles["best-selling-price"]}>{formatPrice(product.price)}</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))
           ) : (
-            <p>Đang tải sản phẩm...</p>
+            <p className={styles["no-products"]}>Đang tải sản phẩm...</p>
           )}
         </div>
       </div>
