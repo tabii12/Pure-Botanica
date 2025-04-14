@@ -1,22 +1,19 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-}
-.title_container{
+/* product.module.css */
+
+.title_container {
     width: 1240px;
     height: 100px;
     display: flex;
     align-items: center;
     margin: 80px 0px 0px 280px;
-
 }
-.title_container h1{
+
+.title_container h1 {
     color: #004C59;
     font-size: 30px;
 }
-.title_container a{
+
+.title_container a {
     width: 150px;
     height: 35px;
     background-color: #004C59;
@@ -28,7 +25,7 @@ body {
     margin-left: 40px;
 }
 
-.table-container {
+.table_container {
     overflow-x: auto;
     margin-top: 10px;
     margin-left: 280px;
@@ -44,6 +41,7 @@ table {
 thead {
     background-color: #f4f4f4;
 }
+
 thead th {
     padding: 10px;
     text-align: left;
@@ -55,6 +53,7 @@ tbody td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
+
 tbody td a {
     text-decoration: none;
 }
@@ -62,13 +61,14 @@ tbody td a {
 tbody tr:hover {
     background-color: #f9f9f9;
 }
-td
-img {
+
+td img {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
 }
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -77,25 +77,57 @@ img {
     margin-top: 20px;
 }
 
-.page-link {
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .page-link {
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
     text-decoration: none;
     color: #333;
-}
-
-.page-link:hover {
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .page-link:hover {
     background-color: #f5f5f5;
-}
-
-.page-link.active {
+  }
+  
+  .page-link.active {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
-}
+  }
+  
+  .page-link:disabled {
+    background-color: #ddd;
+    color: #888;
+    cursor: not-allowed;
+  }
+  
+  .page-link:first-child,
+  .page-link:last-child {
+    font-weight: bold;
+  }
+  
+  .page-link:not(:disabled) {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .page-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+  }
+  
 
-.page-dots {
+.page_dots {
     padding: 0 5px;
     color: #666;
 }
@@ -107,10 +139,15 @@ button {
     font-size: 1.2rem;
 }
 
-.edit-btn i{
+.edit_btn i {
     color: #6b6b6b;
 }
 
-.delete-btn i{
+.delete_btn i {
     color: #dc3545;
+}
+.table-container{
+    overflow-x: auto;
+    margin-top: 10px;
+    margin-left: 280px;
 }

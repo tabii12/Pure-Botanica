@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import "./page.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   // Xử lý khi nhấn vào chấm (dot)
-  const goToSlide = (index) => {
+  const goToSlide = (index: SetStateAction<number>) => {
     setCurrentSlide(index);
   };
   return (
