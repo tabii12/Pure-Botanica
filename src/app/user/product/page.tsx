@@ -29,7 +29,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3002/products");
+        const response = await fetch("https://api-zeal.onrender.com/api/products");
         const data: Product[] = await response.json();
         setProducts(data);
         setFilteredProducts(data);

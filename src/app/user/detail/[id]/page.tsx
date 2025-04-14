@@ -23,7 +23,7 @@ export default function DetailPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:3002/products/${id}`);
+        const res = await fetch(`https://api-zeal.onrender.com/api/products/${id}`);
         const data = await res.json();
         setProduct(data);
         setLoading(false);
