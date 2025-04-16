@@ -19,12 +19,6 @@ const getImageUrl = (image: string): string => {
   return `/images/${image}`;
 };
 
-// Hàm cắt ngắn văn bản
-const truncateText = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength - 3) + "...";
-};
-
 export default function ProductPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -176,8 +170,8 @@ export default function ProductPage() {
                       height={200}
                       className={styles["product-image"]}
                     />
-                    <div className={styles["product-details"]}>
-                      <h4 className={styles["product-item-name"]}>{truncateText(product.name, 30)}</h4>
+                    <div className={styles["  "]}>
+                      <h4 className={styles["product-item-name"]}>{product.name}</h4>
                       <div className={styles["product-card"]}>
                         <p className={styles.price}>{formatPrice(product.price)}</p>
                         <span title="Thêm vào Giỏ Hàng" className={styles.cartIcon}>
@@ -200,7 +194,7 @@ export default function ProductPage() {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
               >
-                &lt;
+                <i className="fa-solid fa-chevron-left"></i>
               </button>
               {(() => {
                 const paginationRange = [];
@@ -247,7 +241,7 @@ export default function ProductPage() {
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
               >
-                &gt;
+                <i className="fa-solid fa-chevron-right"></i>
               </button>
             </div>
           )}
@@ -277,7 +271,7 @@ export default function ProductPage() {
                   </div>
                   <div className={styles["best-selling-details"]}>
                     <h3 className={styles["best-selling-product-name"]}>
-                      {truncateText(product.name, 30)}
+                      {product.name}
                     </h3>
                     <p className={styles["best-selling-price"]}>{formatPrice(product.price)}</p>
                   </div>

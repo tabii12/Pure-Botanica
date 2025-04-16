@@ -42,7 +42,7 @@
 
 /* ----- SIDEBAR DANH MỤC SẢN PHẨM ----- */
 .productSidebar {
-  width: 265px;
+ 
   padding: 20px;
 }
 
@@ -53,6 +53,7 @@
 }
 
 .menu-list {
+  padding-inline-start: 0;
   list-style: none;
 }
 
@@ -118,7 +119,7 @@
 
 .productItem {
   width: 280px;
-  height: 450px;
+
   padding: 25px;
   border-radius: 8px;
   min-height: 280px;
@@ -129,7 +130,13 @@
   transition: all 0.3s;
   margin-bottom: 20px;
 }
-
+.product-details{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+  
+}
 .productItem:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -142,11 +149,9 @@
   border-radius: 5px;
 }
 
-.product-details {
-  padding: 16px;
-}
 
 .product-item-name {
+  height: 30px;
   font-size: 18px;
   margin: 20px 0;
 }
@@ -264,7 +269,8 @@
   color: white;
   padding: 5px 10px;
   border-radius: 0 5px 5px 0;
-  font-size: 16px;
+  font-size: 20px;
+  text-align: center;
 }
 
 .best-selling-image {
@@ -287,10 +293,11 @@
 }
 
 .best-selling-details {
-  padding: 30px;
+  padding: 0 30px 0 30px;
 }
 
 .best-selling-product-name {
+  height: 50px;
   font-size: 18px;
   margin-top: 10px;
   color: #333;
@@ -298,7 +305,7 @@
 
 .best-selling-price {
   font-size: 20px;
-  margin-top: 25px;
+  margin-top: 50px;
   font-weight: bold;
   color: #2a7e19;
 }

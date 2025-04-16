@@ -1,7 +1,14 @@
+
+
+* {
+  font-family: 'Roboto Slab', serif;
+}
 body{
   margin-top: 100px;
+  font-family: 'Roboto Slab', serif;
 }
-header {
+header { 
+
   position: fixed;
   top: 0;
   left: 50%; /* căn giữa theo chiều ngang */
@@ -21,10 +28,9 @@ header i{
 .icons a {
 color: #000000;
 }
-*{
-  font-family: 'Roboto Slab', serif;
-}
+
 .header-container {
+  margin: 0 auto;
   width: 1290px;
   display: flex;
   justify-content: space-between;
