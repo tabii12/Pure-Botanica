@@ -1,300 +1,236 @@
 "use client";
-import { useEffect, useState } from "react";
-import "../add_product/add_product.css";
+import React, { useState, useEffect } from "react";
+import "../add_product/add_product.css"; // Import CSS file
 
-interface Category {
-  _id: string;
-  name: string;
-  createdAt: string;
-}
-
-interface Product {
-  name: string;
-  price: number;
-  stock: number;
-  images?: string[];
-  category?: Category;
-  description?: string;
-  ingredients?: string[];
-  usage_instructions?: string[];
-  newImages?: File[];
-}
-
-export default function AddProductPage() {
-  const [newProduct, setNewProduct] = useState<Partial<Product>>({
+const AddProduct = () => {
+  const [categories, setCategories] = useState<any[]>([]); // Trạng thái cho danh mục
+  const [formData, setFormData] = useState({
     name: "",
-    price: 0,
-    stock: 0,
+    price: "",
+    discountPrice: "",
+    category: "",
     description: "",
-    ingredients: [],
-    usage_instructions: [],
-    images: [],
-    newImages: [],
+    ingredients: "",
+    usage_instructions: "",
+    special: "",
+    stock: "",
+    images: [] as File[], // Lưu trữ file ảnh
   });
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
 
+  // Fetch categories từ API
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("https://api-zeal.onrender.com/api/categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Lỗi khi tải danh mục:", error);
+      }
+    };
     fetchCategories();
   }, []);
 
-  const showNotification = (message: string, type: string) => {
-    setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: "", type: "" });
-    }, 3000);
+  // Xử lý thay đổi input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const getAuthToken = () => {
-    return localStorage.getItem("authToken") || "";
-  };
+  // Xử lý thay đổi file input cho hình ảnh
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
 
-  const getHeaders = () => {
-    const headers: HeadersInit = {};
-    const token = getAuthToken();
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-    return headers;
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("https://api-zeal.onrender.com/api/categories", { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error(`Lỗi API: ${res.status} ${res.statusText}`);
+      // Kiểm tra nếu có quá 4 ảnh
+      if (files.length + formData.images.length > 4) {
+        alert("Chỉ được chọn tối đa 4 ảnh.");
+        return;
       }
-      const data = await res.json();
-      if (!Array.isArray(data)) {
-        throw new Error("Dữ liệu danh mục không hợp lệ");
-      }
-      setCategories(data);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Lỗi không xác định";
-      console.error("Lỗi khi tải danh mục:", errorMessage);
-      showNotification("Không thể tải danh mục", "error");
+
+      setFormData((prevState) => ({
+        ...prevState,
+        images: [...prevState.images, ...files],
+      }));
     }
   };
 
-  const validateForm = () => {
-    if (!newProduct.name?.trim()) {
-      return "Tên sản phẩm không được để trống";
-    }
-    if (newProduct.price === undefined || newProduct.price < 0) {
-      return "Giá sản phẩm không hợp lệ";
-    }
-    if (newProduct.stock === undefined || newProduct.stock < 0) {
-      return "Số lượng không hợp lệ";
-    }
-    if (!newProduct.category?._id) {
-      return "Vui lòng chọn danh mục";
-    }
-    if (newProduct.newImages && newProduct.newImages.length > 5) {
-      return "Chỉ được chọn tối đa 5 ảnh";
-    }
-    return null;
-  };
-
-  const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Xử lý gửi form
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
 
     try {
-      // Kiểm tra dữ liệu trước khi gửi
-      const validationError = validateForm();
-      if (validationError) {
-        throw new Error(validationError);
-      }
+      const productData = new FormData();
+      productData.append("name", formData.name);
+      productData.append("price", formData.price);
+      productData.append("discountPrice", formData.discountPrice);
+      productData.append("category", formData.category);
+      productData.append("description", formData.description);
+      productData.append("ingredients", JSON.stringify(formData.ingredients.split("\n").filter(Boolean)));
+      productData.append("usage_instructions", JSON.stringify(formData.usage_instructions.split("\n").filter(Boolean)));
+      productData.append("special", JSON.stringify(formData.special.split("\n").filter(Boolean)));
+      productData.append("stock", formData.stock);
 
-      const formData = new FormData();
-      formData.append("name", (newProduct.name ?? "").trim());
-      formData.append("price", newProduct.price?.toString() || "0");
-      formData.append("stock", newProduct.stock?.toString() || "0");
-      formData.append("category_id", newProduct.category!._id);
-      if (newProduct.description?.trim()) {
-        formData.append("description", newProduct.description.trim());
-      }
-      if (newProduct.ingredients && newProduct.ingredients.length > 0) {
-        formData.append("ingredients", JSON.stringify(newProduct.ingredients));
-      }
-      if (newProduct.usage_instructions && newProduct.usage_instructions.length > 0) {
-        formData.append("usage_instructions", JSON.stringify(newProduct.usage_instructions));
-      }
-      if (newProduct.newImages && newProduct.newImages.length > 0) {
-        newProduct.newImages.forEach((file, index) => {
-          if (file.size > 5 * 1024 * 1024) {
-            throw new Error(`Ảnh ${file.name} vượt quá giới hạn 5MB`);
-          }
-          if (!file.type.match(/image\/(jpg|jpeg|png|gif|webp)/)) {
-            throw new Error(`Ảnh ${file.name} không đúng định dạng (jpg, jpeg, png, gif, webp)`);
-          }
-          formData.append("images", file);
-        });
-      } else {
-        throw new Error("Vui lòng chọn ít nhất một ảnh");
-      }
-
-      console.log("Sending FormData:", Array.from(formData.entries()));
+      // Thêm hình ảnh vào FormData
+      formData.images.forEach((file) => {
+        productData.append("images", file);
+      });
 
       const response = await fetch("https://api-zeal.onrender.com/api/products", {
         method: "POST",
-        headers: getHeaders(),
-        body: formData,
+        body: productData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("API Error Response:", errorData);
-        throw new Error(errorData.message || `Lỗi HTTP: ${response.status} (${response.statusText})`);
+      if (response.ok) {
+        alert("Sản phẩm đã được thêm thành công!");
+        // Reset form
+        setFormData({
+          name: "",
+          price: "",
+          discountPrice: "",
+          category: "",
+          description: "",
+          ingredients: "",
+          usage_instructions: "",
+          special: "",
+          stock: "",
+          images: [],
+        });
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Đã xảy ra lỗi khi thêm sản phẩm.");
       }
-
-      const savedProduct = await response.json();
-      console.log("Saved Product:", savedProduct);
-
-      setNewProduct({
-        name: "",
-        price: 0,
-        stock: 0,
-        description: "",
-        ingredients: [],
-        usage_instructions: [],
-        images: [],
-        newImages: [],
-      });
-      showNotification("Thêm sản phẩm thành công", "success");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Lỗi không xác định";
-      console.error("Lỗi khi thêm sản phẩm:", errorMessage, error);
-      setError(errorMessage);
-      showNotification(errorMessage, "error");
-    } finally {
-      setLoading(false);
+      console.error("Lỗi khi thêm sản phẩm:", error);
+      alert("Đã xảy ra lỗi không xác định.");
     }
   };
 
   return (
-    <div className="product-management-container">
-      {notification.show && <div className={`notification ${notification.type}`}>{notification.message}</div>}
-      {loading && <div className="processing-indicator">Đang xử lý...</div>}
-      <div className="title_container">
-        <h1>THÊM SẢN PHẨM</h1>
-      </div>
-      <div className="modal-content">
-        <h2>Thêm sản phẩm mới</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleAddProduct}>
+    <div>
+      <h1>Thêm sản phẩm</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
           <label>Tên sản phẩm</label>
           <input
             type="text"
-            value={newProduct.name || ""}
-            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
             required
           />
+        </div>
+        <div>
           <label>Giá</label>
           <input
             type="number"
-            value={newProduct.price || 0}
-            onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })}
+            name="price"
+            value={formData.price}
+            onChange={handleInputChange}
             required
-            min="0"
           />
-          <label>Số lượng</label>
+        </div>
+        <div>
+          <label>Giá khuyến mãi</label>
           <input
             type="number"
-            value={newProduct.stock || 0}
-            onChange={(e) => setNewProduct({ ...newProduct, stock: Number(e.target.value) })}
-            required
-            min="0"
+            name="discountPrice"
+            value={formData.discountPrice}
+            onChange={handleInputChange}
           />
+        </div>
+        <div>
           <label>Danh mục</label>
           <select
-            value={newProduct.category?._id || ""}
-            onChange={(e) => {
-              const selectedCategory = categories.find((cat) => cat._id === e.target.value);
-              setNewProduct({
-                ...newProduct,
-                category: selectedCategory
-                  ? { _id: selectedCategory._id, name: selectedCategory.name, createdAt: selectedCategory.createdAt }
-                  : undefined,
-              });
-            }}
+            name="category"
+            value={formData.category}
+            onChange={(e) =>
+              setFormData((prevState) => ({
+                ...prevState,
+                category: e.target.value,
+              }))
+            }
             required
           >
             <option value="">Chọn danh mục</option>
-            {categories.map((category) => (
+            {categories.map((category: any) => (
               <option key={category._id} value={category._id}>
                 {category.name}
               </option>
             ))}
           </select>
+        </div>
+        <div>
           <label>Mô tả</label>
           <textarea
-            value={newProduct.description || ""}
-            onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-            rows={4}
-          />
-          <label>Thành phần</label>
-          <textarea
-            value={newProduct.ingredients?.join("\n") || ""}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, ingredients: e.target.value.split("\n").filter(Boolean) })
-            }
-            rows={4}
-            placeholder="Nhập từng thành phần trên một dòng"
-          />
-          <label>Hướng dẫn sử dụng</label>
-          <textarea
-            value={newProduct.usage_instructions?.join("\n") || ""}
-            onChange={(e) =>
-              setNewProduct({
-                ...newProduct,
-                usage_instructions: e.target.value.split("\n").filter(Boolean),
-              })
-            }
-            rows={4}
-            placeholder="Nhập từng bước trên một dòng"
-          />
-          <label>Hình ảnh (tối đa 5 ảnh, yêu cầu ít nhất 1 ảnh)</label>
-          <input
-            type="file"
-            className="file-input"
-            multiple
-            accept=".jpg,.jpeg,.png,.gif,.webp"
-            onChange={(e) => {
-              const files = Array.from(e.target.files || []).slice(0, 5);
-              setNewProduct({ ...newProduct, newImages: files });
-            }}
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
             required
           />
-          <div className="modal-actions">
-            <button type="submit" className="save-btn" disabled={loading}>
-              Thêm sản phẩm
-            </button>
-            <button
-              type="button"
-              className="cancel-btn"
-              onClick={() =>
-                setNewProduct({
-                  name: "",
-                  price: 0,
-                  stock: 0,
-                  description: "",
-                  ingredients: [],
-                  usage_instructions: [],
-                  images: [],
-                  newImages: [],
-                })
-              }
-              disabled={loading}
-            >
-              Xóa form
-            </button>
+        </div>
+        <div>
+          <label>Thành phần</label>
+          <textarea
+            name="ingredients"
+            value={formData.ingredients}
+            onChange={handleInputChange}
+            placeholder="Nhập từng thành phần trên một dòng"
+          />
+        </div>
+        <div>
+          <label>Hướng dẫn sử dụng</label>
+          <textarea
+            name="usage_instructions"
+            value={formData.usage_instructions}
+            onChange={handleInputChange}
+            placeholder="Nhập từng bước trên một dòng"
+          />
+        </div>
+        <div>
+          <label>Đặc điểm nổi bật</label>
+          <textarea
+            name="special"
+            value={formData.special}
+            onChange={handleInputChange}
+            placeholder="Nhập từng đặc điểm trên một dòng"
+          />
+        </div>
+        <div>
+          <label>Số lượng</label>
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Hình ảnh (Tối đa 4 ảnh)</label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+          />
+          <div>
+            {formData.images.length > 0 && (
+              <ul>
+                {formData.images.map((image, index) => (
+                  <li key={index}>{image.name}</li>
+                ))}
+              </ul>
+            )}
           </div>
-        </form>
-      </div>
+        </div>
+        <button type="submit">Thêm sản phẩm</button>
+      </form>
     </div>
   );
-}
+};
+
+export default AddProduct;

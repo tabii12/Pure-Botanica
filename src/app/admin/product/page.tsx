@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import "../product/product.css";
+import router from "next/router";
 
 interface Category {
   _id: string;
@@ -18,6 +19,7 @@ interface Product {
   description?: string;
   ingredients?: string[];
   usage_instructions?: string[];
+  special?: string[];
   newImages?: File[];
 }
 
@@ -113,8 +115,8 @@ export default function ProductPage() {
     if (!editProduct?.category?._id) {
       return "Vui lòng chọn danh mục";
     }
-    if (editProduct?.newImages && editProduct.newImages.length > 5) {
-      return "Chỉ được chọn tối đa 5 ảnh";
+    if (editProduct?.newImages && editProduct.newImages.length > 4) {
+      return "Chỉ được chọn tối đa 4 ảnh";
     }
     return null;
   };
@@ -139,18 +141,23 @@ export default function ProductPage() {
       }
 
       const formData = new FormData();
-      formData.append("name", editProduct.name.trim());
+      formData.append("name", editProduct.name || "");
       formData.append("price", editProduct.price?.toString() || "0");
       formData.append("stock", editProduct.stock?.toString() || "0");
-      formData.append("category_id", editProduct.category!._id);
-      if (editProduct.description?.trim()) {
-        formData.append("description", editProduct.description.trim());
+      if (editProduct.category?._id) {
+        formData.append("category_id", editProduct.category._id);
+      }
+      if (editProduct.description) {
+        formData.append("description", editProduct.description);
       }
       if (editProduct.ingredients && editProduct.ingredients.length > 0) {
         formData.append("ingredients", JSON.stringify(editProduct.ingredients));
       }
       if (editProduct.usage_instructions && editProduct.usage_instructions.length > 0) {
         formData.append("usage_instructions", JSON.stringify(editProduct.usage_instructions));
+      }
+      if (editProduct.special && editProduct.special.length > 0) {
+        formData.append("special", JSON.stringify(editProduct.special));
       }
       if (editProduct.newImages && editProduct.newImages.length > 0) {
         editProduct.newImages.forEach((file) => {
@@ -163,12 +170,11 @@ export default function ProductPage() {
           formData.append("images", file);
         });
       } else if (editProduct.images && editProduct.images.length > 0) {
+        // Gửi mảng ảnh hiện tại nếu không có ảnh mới
         formData.append("images", JSON.stringify(editProduct.images));
-      } else {
-        throw new Error("Sản phẩm phải có ít nhất một ảnh");
       }
 
-      console.log("Sending FormData:", Array.from(formData.entries()));
+      console.log("Sending FormData:", Array.from(formData.entries())); // Debug FormData
 
       const response = await fetch(`https://api-zeal.onrender.com/api/products/${editProduct._id}`, {
         method: "PUT",
@@ -181,19 +187,20 @@ export default function ProductPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error("API Error Response:", errorData);
-        throw new Error(errorData.message || `Lỗi HTTP: ${response.status} (${response.statusText})`);
+        throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
       }
 
       const updatedProduct = await response.json();
-      console.log("Updated Product:", updatedProduct);
+      console.log("Updated Product:", updatedProduct); // Debug response
 
       setProducts(products.map((p) => (p._id === editProduct._id ? updatedProduct : p)));
       setIsEditing(false);
       setEditProduct(null);
       showNotification("Cập nhật sản phẩm thành công", "success");
+      router.replace(router.asPath);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Lỗi không xác định";
-      console.error("Lỗi khi cập nhật sản phẩm:", errorMessage, error);
+      console.error("Lỗi khi cập nhật sản phẩm:", errorMessage);
       setError(errorMessage);
       showNotification(errorMessage, "error");
     } finally {
@@ -296,7 +303,7 @@ export default function ProductPage() {
                   </td>
                   <td>{product.name}</td>
                   <td>{product.category?.name || "Chưa phân loại"}</td>
-                  <td>{product.price.toLocaleString()}₫</td>
+                  <td>{product.price}₫</td>
                   <td>{product.stock}</td>
                   <td className="action-buttons">
                     <button className="edit-btn" onClick={() => handleEdit(product)} disabled={loading}>
@@ -332,7 +339,7 @@ export default function ProductPage() {
             </button>
           ))}
           <button
-            className="page окна link"
+            className="page-link"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || loading}
           >
@@ -384,77 +391,90 @@ export default function ProductPage() {
               <label>Danh mục</label>
               <select
                 value={editProduct.category?._id || ""}
-                onChange={(e) => {
-                  const selectedCategory = categories.find((cat) => cat._id === e.target.value);
+                onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    category: selectedCategory
-                      ? { _id: selectedCategory._id, name: selectedCategory.name, createdAt: selectedCategory.createdAt }
-                      : undefined,
-                  });
-                }}
+                    category: categories.find((cat) => cat._id === e.target.value) || undefined,
+                  })
+                }
                 required
               >
-                <option value="">Chọn danh mục</option>
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
+                <option value="">-- Chọn danh mục --</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
                   </option>
                 ))}
               </select>
+
               <label>Mô tả</label>
               <textarea
                 value={editProduct.description || ""}
                 onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
-                rows={4}
-              />
-              <label>Thành phần</label>
-              <textarea
-                value={editProduct.ingredients?.join("\n") || ""}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, ingredients: e.target.value.split("\n").filter(Boolean) })
-                }
-                rows={4}
-                placeholder="Nhập từng thành phần trên một dòng"
-              />
-              <label>Hướng dẫn sử dụng</label>
-              <textarea
-                value={editProduct.usage_instructions?.join("\n") || ""}
+              ></textarea>
+
+              <label>Thành phần (phân cách bằng dấu phẩy)</label>
+              <input
+                type="text"
+                value={editProduct.ingredients?.join(", ") || ""}
                 onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    usage_instructions: e.target.value.split("\n").filter(Boolean),
+                    ingredients: e.target.value.split(",").map((item) => item.trim()),
                   })
                 }
-                rows={4}
-                placeholder="Nhập từng bước trên một dòng"
               />
-              <label>Hình ảnh (tối đa 5 ảnh, để trống để giữ ảnh hiện tại)</label>
+
+              <label>Hướng dẫn sử dụng (phân cách bằng dấu phẩy)</label>
+              <input
+                type="text"
+                value={editProduct.usage_instructions?.join(", ") || ""}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    usage_instructions: e.target.value.split(",").map((item) => item.trim()),
+                  })
+                }
+              />
+
+              <label>Điểm đặc biệt (phân cách bằng dấu phẩy)</label>
+              <input
+                type="text"
+                value={editProduct.special?.join(", ") || ""}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    special: e.target.value.split(",").map((item) => item.trim()),
+                  })
+                }
+              />
+
+              <label>Ảnh mới (tối đa 4 ảnh)</label>
               <input
                 type="file"
-                className="file-input"
+                accept="image/*"
                 multiple
-                accept=".jpg,.jpeg,.png,.gif,.webp"
-                onChange={(e) => {
-                  const files = Array.from(e.target.files || []).slice(0, 5);
-                  setEditProduct({ ...editProduct, newImages: files });
-                }}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    newImages: e.target.files ? Array.from(e.target.files) : [],
+                  })
+                }
               />
-              {editProduct.images && editProduct.images.length > 0 && (
-                <div>
-                  <p>Ảnh hiện tại:</p>
-                  <ul>
-                    {editProduct.images.map((img, index) => (
-                      <li key={index}>{img}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+
               <div className="modal-actions">
-                <button type="submit" className="save-btn" disabled={loading}>
-                  Lưu
+                <button className="confirm-btn" type="submit" disabled={loading}>
+                  Cập nhật
                 </button>
-                <button type="button" className="cancel-btn" onClick={() => setIsEditing(false)} disabled={loading}>
+                <button
+                  className="cancel-btn"
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditProduct(null);
+                    setError(null);
+                  }}
+                >
                   Hủy
                 </button>
               </div>
