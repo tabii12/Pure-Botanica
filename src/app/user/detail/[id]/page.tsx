@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import styles from "./Detail.module.css"; // Sửa import để dùng CSS Modules đúng cách
+import styles from "./Detail.module.css";
 import { Product } from "@/app/components/product_interface";
 
 const formatPrice = (price: number): string => {
@@ -42,7 +42,6 @@ export default function DetailPage() {
     if (!product) return;
 
     const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-
     const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
 
     if (existingItemIndex !== -1) {
@@ -51,7 +50,7 @@ export default function DetailPage() {
       cartItems.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.discountPrice || product.price,
         image: product.images?.[0] || "",
         quantity,
       });
@@ -103,7 +102,21 @@ export default function DetailPage() {
           {/* Product Info */}
           <div className={styles["product-info"]}>
             <h1 className={styles["product-title"]}>{product.name}</h1>
-            <p className={styles["product-price"]}>{formatPrice(product.price)}</p>
+            <p className={styles["product-price"]}>
+              {product.discountPrice ? (
+                <>
+                  <span className={styles["discount-price"]}>{formatPrice(product.discountPrice)}</span>
+                  <span className={styles["original-price"]}>{formatPrice(product.price)}</span>
+                  <span className={styles["discount-percent"]}>
+                    {`-${Math.round(
+                      ((product.price - product.discountPrice) / product.price) * 100
+                    )}%`}
+                  </span>
+                </>
+              ) : (
+                <>{formatPrice(product.price)}</>
+              )}
+            </p>
             <p className={styles["product-description"]}>
               {product.description || "Chưa có mô tả cho sản phẩm này."}
             </p>

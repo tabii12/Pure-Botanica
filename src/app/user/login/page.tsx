@@ -1,12 +1,20 @@
 "use client";
-
+import Link from "next/link";
+import { jwtDecode } from "jwt-decode"; // Named import
 import "./login.css";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+// Khai báo kiểu tùy chỉnh cho payload của token
+interface CustomJwtPayload {
+    id?: string;
+    email?: string;
+    role?: string;
+    iat?: number;
+    exp?: number;
+}
 
+export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,27 +25,37 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const res = await fetch("https://db-pure-bonanica.onrender.com/users/login", {
+            const res = await fetch("https://api-zeal.onrender.com/api/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
 
             const data = await res.json();
-            console.log("API Response:", data); // Kiểm tra dữ liệu trả về
+            console.log("API Response:", data);
 
             if (!res.ok) {
                 setError(data.message || "Đăng nhập thất bại");
                 return;
             }
 
-            // Lưu token và role vào localStorage
+            // Giải mã token với kiểu tùy chỉnh
+            const decodedToken: CustomJwtPayload = jwtDecode(data.token);
+            const userRole = decodedToken.role;
+            const userEmail = decodedToken.email;
+
+            if (!userRole) {
+                setError("Không tìm thấy thông tin vai trò người dùng");
+                return;
+            }
+
+            // Lưu thông tin vào localStorage
             localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.user.role); // Lưu role từ API
-            localStorage.setItem("email", data.user.email);
+            localStorage.setItem("role", userRole);
+            localStorage.setItem("email", userEmail || "");
 
             // Chuyển hướng theo quyền
-            if (data.user.role === "admin") {
+            if (userRole === "admin") {
                 router.push("/admin");
             } else {
                 router.push("/user");
@@ -48,13 +66,13 @@ export default function LoginPage() {
         }
     };
 
-
     return (
         <div className="containerrr">
             <div className="form-box">
-                <h2><strong>ĐĂNG NHẬP</strong></h2>
+                <h2>
+                    <strong>ĐĂNG NHẬP</strong>
+                </h2>
 
-                {/* Nút Đăng nhập với Google */}
                 <button className="google-btn">
                     <img src="/images/icons8-google-48.png" alt="Google Logo" /> Đăng nhập với Google
                 </button>
@@ -65,10 +83,22 @@ export default function LoginPage() {
                     <hr />
                 </div>
 
-                {/* Form Đăng Nhập */}
                 <form action="#" method="post" onSubmit={handleSubmit}>
-                    <input type="email" placeholder="Myname@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required /><br />
-                    <input type="password" placeholder="Mật khẩu" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input
+                        type="email"
+                        placeholder="Myname@gmail.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <br />
+                    <input
+                        type="password"
+                        placeholder="Mật khẩu"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
 
                     <div className="forgot-password">
                         <a href="#">Quên mật khẩu?</a>
@@ -77,7 +107,9 @@ export default function LoginPage() {
                     <button type="submit" className="submit-btn">ĐĂNG NHẬP</button>
                     {error && <p className="error-message">{error}</p>}
 
-                    <p className="switch-form">Chưa có tài khoản? <a href="register.html">Đăng ký</a></p>
+                    <p className="switch-form">
+                        Chưa có tài khoản? <Link href="/register">Đăng ký</Link>
+                    </p>
                 </form>
             </div>
         </div>

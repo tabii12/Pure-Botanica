@@ -5,11 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/app/components/product_interface";
 
-interface MenuItem {
-  title: string;
-  subItems?: string[];
-}
-
 const formatPrice = (price: number): string => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 };
@@ -21,24 +16,62 @@ const getImageUrl = (image: string): string => {
 
 export default function ProductPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Thêm state loading
   const productsPerPage = 9;
 
+  // Fetch sản phẩm
   useEffect(() => {
     const fetchProducts = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("https://api-zeal.onrender.com/api/products");
         const data: Product[] = await response.json();
         setProducts(data);
         setFilteredProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Lỗi khi lấy sản phẩm:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchProducts();
   }, []);
+
+  // Fetch danh mục
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("https://db-pure-bonanica.onrender.com/categories");
+        const data = await res.json();
+        const categoryNames = data.map((cat: any) => cat.name);
+        setCategories(["Tất cả", ...categoryNames]);
+      } catch (err) {
+        console.error("Lỗi khi lấy danh mục:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const filterProducts = (category: string) => {
+    if (category === "Tất cả" || activeCategory === category) {
+      // Reset về tất cả sản phẩm
+      setFilteredProducts(products);
+      setActiveCategory(null);
+    } else {
+      // Lọc sản phẩm với kiểm tra an toàn
+      const filtered = products.filter((product) => {
+        // Kiểm tra nếu product.category tồn tại và có name
+        return product.category && product.category.name === category;
+      });
+      setFilteredProducts(filtered.length > 0 ? filtered : []);
+      setActiveCategory(category);
+    }
+    setCurrentPage(1);
+  };
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -50,49 +83,6 @@ export default function ProductPage() {
       setCurrentPage(totalPages);
     }
   }, [filteredProducts, currentPage, totalPages]);
-
-  const menuItems: MenuItem[] = [
-    {
-      title: "Trang điểm",
-      subItems: ["Son dưỡng môi", "Son màu không chì", "Tẩy da chết môi", "Kem nền", "Kem má"],
-    },
-    {
-      title: "Chăm sóc da",
-      subItems: ["Tẩy trang - rửa mặt", "Toner - xịt khoáng", "Dưỡng da", "Kem chống nắng"],
-    },
-    {
-      title: "Chăm sóc cơ thể",
-      subItems: [
-        "Xà bông thiên nhiên",
-        "Sữa tắm thiên nhiên",
-        "Dưỡng thể",
-        "Tẩy da chết body",
-        "Chăm sóc răng miệng",
-      ],
-    },
-    {
-      title: "Chăm sóc tóc",
-      subItems: ["Dầu gội", "Dầu xả"],
-    },
-    {
-      title: "Hương thơm",
-      subItems: ["Tinh dầu nguyên chất", "Tinh dầu trị liệu", "Nước hoa khô", "Nước hoa dạng xịt"],
-    },
-    {
-      title: "Em bé",
-      subItems: ["Tắm em bé", "Chăm sóc bé"],
-    },
-  ];
-
-  const toggleSubMenu = (title: string) => {
-    setOpenSubMenu(openSubMenu === title ? null : title);
-  };
-
-  const filterProducts = (subItem: string) => {
-    const filtered = products.filter((product) => product.name.includes(subItem));
-    setFilteredProducts(filtered.length > 0 ? filtered : products);
-    setCurrentPage(1);
-  };
 
   const getRandomProducts = (products: Product[], count: number): Product[] => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
@@ -113,49 +103,31 @@ export default function ProductPage() {
         <aside className={styles.productSidebar}>
           <h3 className={styles["sidebar-title"]}>DANH MỤC SẢN PHẨM</h3>
           <ul className={styles["menu-list"]}>
-            {menuItems.map((item) => {
-              const isActive = openSubMenu === item.title;
-              return (
-                <li
-                  key={item.title}
-                  className={`${styles["menu-list-item"]} ${item.subItems ? styles["sub-menu1"] : ""} ${
-                    isActive ? styles.active : ""
-                  }`}
-                  onClick={item.subItems ? () => toggleSubMenu(item.title) : undefined}
+            {categories.map((category) => (
+              <li
+                key={category}
+                className={styles["menu-list-item"]}
+                onClick={() => filterProducts(category)}
+              >
+                <span
+                  className={styles["menu-title"]}
+                  style={{
+                    color: activeCategory === category ? "#8D5524" : "#357E38",
+                    cursor: "pointer",
+                  }}
                 >
-                  <span className={styles["menu-title"]}>
-                    <i
-                      className="fa-solid fa-caret-down"
-                      style={{
-                        transform: isActive ? "rotate(0deg)" : "rotate(-90deg)",
-                        color: "#8D5524",
-                      }}
-                    ></i>{" "}
-                    <span style={{ color: isActive ? "#8D5524" : "#357E38" }}>{item.title}</span>
-                  </span>
-
-                  {item.subItems && isActive && (
-                    <ul className={styles["sub-menu-list"]}>
-                      {item.subItems.map((subItem) => (
-                        <li
-                          key={subItem}
-                          className={styles["sub-menu-list-item"]}
-                          onClick={() => filterProducts(subItem)}
-                        >
-                          - {subItem}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
+                  {category}  
+                </span>
+              </li>
+            ))}
           </ul>
         </aside>
 
         <section className={styles.productContainer}>
           <div className={styles.productGrid}>
-            {currentProducts.length > 0 ? (
+            {isLoading ? (
+              <p className={styles["no-products"]}>Đang tải sản phẩm...</p>
+            ) : currentProducts.length > 0 ? (
               currentProducts.map((product) => (
                 <Link
                   href={`/user/detail/${product._id}`}
@@ -170,7 +142,7 @@ export default function ProductPage() {
                       height={200}
                       className={styles["product-image"]}
                     />
-                    <div className={styles["  "]}>
+                    <div>
                       <h4 className={styles["product-item-name"]}>{product.name}</h4>
                       <div className={styles["product-card"]}>
                         <p className={styles.price}>{formatPrice(product.price)}</p>
@@ -183,7 +155,11 @@ export default function ProductPage() {
                 </Link>
               ))
             ) : (
-              <p className={styles["no-products"]}>Đang tải sản phẩm...</p>
+              <p className={styles["no-products"]}>
+                {activeCategory
+                  ? `Không tìm thấy sản phẩm trong danh mục "${activeCategory}"`
+                  : "Không có sản phẩm nào."}
+              </p>
             )}
           </div>
 
@@ -196,6 +172,7 @@ export default function ProductPage() {
               >
                 <i className="fa-solid fa-chevron-left"></i>
               </button>
+
               {(() => {
                 const paginationRange = [];
                 let start = Math.max(1, currentPage - 1);
@@ -234,6 +211,7 @@ export default function ProductPage() {
 
                 return paginationRange;
               })()}
+
               <button
                 className={`${styles["page-btn"]} ${
                   currentPage === totalPages ? styles.disabled : ""
@@ -270,9 +248,7 @@ export default function ProductPage() {
                     />
                   </div>
                   <div className={styles["best-selling-details"]}>
-                    <h3 className={styles["best-selling-product-name"]}>
-                      {product.name}
-                    </h3>
+                    <h3 className={styles["best-selling-product-name"]}>{product.name}</h3>
                     <p className={styles["best-selling-price"]}>{formatPrice(product.price)}</p>
                   </div>
                 </div>

@@ -59,16 +59,23 @@
 
 .menu-list-item {
   color: #357e38;
-  padding: 8px 0;
+  padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
+  display: flex;
   align-items: center;
-  padding: 8px 12px;
   transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.menu-list-item:hover {
+  background-color: #f0f0f0;
 }
 
 .menu-list-item.active {
   color: #8d5524;
+  background-color: #e6e6e6;
+  font-weight: bold;
 }
 
 .menu-list-item i {
@@ -76,24 +83,10 @@
   font-size: 16px;
   color: #8d5524;
 }
+.menu-title{
 
-.sub-menu1 {
-  color: #8d5524;
-}
-
-.sub-menu-list {
-  padding-left: 20px;
-  font-size: 13px;
-  color: #555;
-  list-style: none;
-}
-
-.sub-menu-list-item {
-  color: #8d5524;
-}
-
-.sub-menu-list-item:hover {
-  color: #357e38;
+  font-size: 20px;
+ 
 }
 
 /* ----- DANH SÁCH SẢN PHẨM ----- */

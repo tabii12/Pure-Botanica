@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Category } from "../components/category_interface";
-import { SubCategory } from "../components/sub_category_interface";
+
 import CategoryList from "../components/category_list";
 
 const geistSans = Geist({
@@ -25,7 +25,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const category: Category[] = await getCategories("https://db-pure-bonanica.onrender.com/categories");
-  const subCategory: SubCategory[] = await getSubCategories("https://db-pure-bonanica.onrender.com/sub_categories");
+
   return (
     <html lang="en">
       <head>
@@ -50,7 +50,7 @@ export default async function RootLayout({
                   Sản phẩm
                   {/* <i className="fa-solid fa-chevron-down"></i> */}
                 </Link>
-                <CategoryList categories={category} subCategories={subCategory} />
+                <CategoryList categories={category} />
               </div>
               <Link href="/user/about">Về chúng tôi</Link>
               <Link href="#">Liên hệ</Link>
@@ -135,23 +135,8 @@ async function getCategories(url: string): Promise<Category[]> {
   if (!Array.isArray(data)) return [];
 
   return data.map((category: any) => ({
-    id: category._id,
+    _id: category._id,
     name: category.name,
   }));
 }
 
-async function getSubCategories(url: string): Promise<SubCategory[]> {
-  let res = await fetch(url, { cache: "no-store" });
-
-  if (!res.ok) return [];
-
-  let data = await res.json();
-
-  if (!Array.isArray(data)) return [];
-
-  return data.map((sub_category: any) => ({
-    id: sub_category._id,
-    name: sub_category.name,
-    category: sub_category.category,
-  }));
-}

@@ -59,7 +59,7 @@
   
   .product-info {
     flex: 1;
-    padding: 20px 0;
+   
     margin-bottom: 30px;
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -69,17 +69,18 @@
   }
   
   .product-title {
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 20px;
+    margin : 0 auto;
+    font-size: 32px;
+    font-weight: 200px;
+    font-weight: initial;
     color: #333;
   }
   
-  .product-price {
-    font-size: 24px;
-    font-weight: 700;
+.product-price {
+    font-size: 32px;
+    font-weight: bold;
+    color: #8d5524;
     margin-bottom: 20px;
-    color: #b06e28;
   }
   
   .product-description {
@@ -329,3 +330,26 @@
   .contact-button:hover {
     background-color: #6d4c41;
   }
+  .discount-price {
+    color: #357E38; /* xanh lá */
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .original-price {
+    color: #8B4513; /* nâu */
+    text-decoration: line-through;
+    font-size: 28px;
+    margin-right: 10px;
+  }
+  
+  .discount-percent {
+    color: white;
+    background-color: #357E38;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
