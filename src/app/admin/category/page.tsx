@@ -1,19 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import "./category.css";
-
 import type { Category } from "@/app/components/category_interface";
 
 export default function Category() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:3002/categories");
+        const res = await fetch("https://api-zeal.onrender.com/api/categories");
         const data = await res.json();
-        setCategories(data);
+        // Filter out hidden categories
+        setCategories(data.filter((cat: Category) => !cat.isHidden));
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi tải danh sách danh mục:", error);
@@ -25,27 +26,80 @@ export default function Category() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa danh mục này không?")) return;
+    if (!confirm("Bạn có chắc chắn muốn xử lý danh mục này không?")) return;
 
     try {
-      const res = await fetch(`http://localhost:3002/categories/${id}`, {
-        method: "DELETE",
-      });
+      // Check if the category has products
+      const resProducts = await fetch(`https://api-zeal.onrender.com/api/categories/${id}/products`);
+      const products = await resProducts.json();
 
-      if (res.ok) {
-        setCategories((prev) => prev.filter((cat) => cat._id !== id));
-        alert("Xóa danh mục thành công!");
+      if (products.length > 0) {
+        // Hide the category instead of deleting
+        const resHide = await fetch(`https://api-zeal.onrender.com/api/categories/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isHidden: true }),
+        });
+
+        if (resHide.ok) {
+          setCategories((prev) => prev.filter((cat) => cat._id !== id));
+          alert("Danh mục đã được ẩn vì có sản phẩm!");
+        } else {
+          alert("Ẩn danh mục thất bại!");
+        }
       } else {
-        alert("Xóa danh mục thất bại!");
+        // Delete the category if it has no products
+        const resDelete = await fetch(`https://api-zeal.onrender.com/api/categories/${id}`, {
+          method: "DELETE",
+        });
+
+        if (resDelete.ok) {
+          setCategories((prev) => prev.filter((cat) => cat._id !== id));
+          alert("Xóa danh mục thành công!");
+        } else {
+          alert("Xóa danh mục thất bại!");
+        }
       }
     } catch (error) {
-      console.error("Lỗi khi xóa danh mục:", error);
-      alert("Đã xảy ra lỗi khi xóa danh mục.");
+      console.error("Lỗi khi xử lý danh mục:", error);
+      alert("Đã xảy ra lỗi khi xử lý danh mục.");
     }
   };
 
   const handleEdit = (id: string) => {
-    window.location.href = `/admin/edit_category?id=${id}`;
+    const category = categories.find((cat) => cat._id === id);
+    if (category) {
+      setEditingCategory(category);
+    }
+  };
+
+  const handleUpdate = async (id: string, updatedName: string) => {
+    try {
+      const res = await fetch(`https://api-zeal.onrender.com/api/categories/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: updatedName }),
+      });
+
+      if (res.ok) {
+        setCategories((prev) =>
+          prev.map((cat) =>
+            cat._id === id ? { ...cat, name: updatedName } : cat
+          )
+        );
+        setEditingCategory(null);
+        alert("Cập nhật danh mục thành công!");
+      } else {
+        alert("Cập nhật danh mục thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật danh mục:", error);
+      alert("Đã xảy ra lỗi khi cập nhật danh mục.");
+    }
   };
 
   if (loading) {
@@ -72,20 +126,57 @@ export default function Category() {
             <tbody>
               {categories.map((category) => (
                 <tr key={category._id}>
-                  <td>{category.name}</td>
                   <td>
-                    <button
-                      className="btn-edit"
-                      onClick={() => handleEdit(category._id)}
-                    >
-                      Chỉnh sửa
-                    </button>
-                    <button
-                      className="btn-remove"
-                      onClick={() => handleDelete(category._id)}
-                    >
-                      Xóa
-                    </button>
+                    {editingCategory?._id === category._id ? (
+                      <input
+                        type="text"
+                        value={editingCategory.name}
+                        onChange={(e) =>
+                          setEditingCategory({
+                            ...editingCategory,
+                            name: e.target.value,
+                          })
+                        }
+                        className="edit-input"
+                      />
+                    ) : (
+                      category.name
+                    )}
+                  </td>
+                  <td>
+                    {editingCategory?._id === category._id ? (
+                      <>
+                        <button
+                          className="btn-save"
+                          onClick={() =>
+                            handleUpdate(category._id, editingCategory.name)
+                          }
+                        >
+                          Lưu
+                        </button>
+                        <button
+                          className="btn-cancel"
+                          onClick={() => setEditingCategory(null)}
+                        >
+                          Hủy
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="btn-edit"
+                          onClick={() => handleEdit(category._id)}
+                        >
+                          Chỉnh sửa
+                        </button>
+                        <button
+                          className="btn-remove"
+                          onClick={() => handleDelete(category._id)}
+                        >
+                          Xóa
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

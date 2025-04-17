@@ -1,117 +1,120 @@
-* {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-}
-
-.container {
-    margin-top: 70px;
+.container-category {
     max-width: 800px;
-    margin: 70px auto;
-    background-color: white;
-    padding: 25px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-h1 {
-    font-size: 24px;
-    color: #0d5c63;
-    margin-top: 0;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.form-group {
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .form-table-category {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .name-table-category {
     margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #333;
-    font-size: 15px;
-}
-
-input[type="text"], 
-textarea,
-select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    background-color: #f9f9f9;
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.checkbox-group {
-    margin-top: 15px;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    font-weight: normal;
-    cursor: pointer;
-}
-
-.checkbox-label input {
-    margin-right: 10px;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  }
+  
+  .name-table-category span {
+    font-size: 24px;
     font-weight: bold;
-    min-width: 120px;
-    text-align: center;
-    font-size: 15px;
-}
-
-.btn-primary {
-    background-color: #0d5c63;
+  }
+  
+  .form-btn-add-new-category {
+    margin-top: 10px;
+  }
+  
+  .btn-add-new-category,
+  .btn-add,
+  .btn-save,
+  .btn-edit,
+  .btn-remove,
+  .btn-cancel {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .btn-add-new-category,
+  .btn-add,
+  .btn-save {
+    background: #28a745;
     color: white;
-}
-
-.btn-cancel {
-    background-color: #ff7452;
+  }
+  
+  .btn-edit {
+    background: #007bff;
     color: white;
-}
-
-.btn-secondary {
-    background-color: #f1f1f1;
-    color: #333;
+  }
+  
+  .btn-remove {
+    background: #dc3545;
+    color: white;
+  }
+  
+  .btn-cancel {
+    background: #6c757d;
+    color: white;
+  }
+  
+  .btn-add-new-category a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th,
+  td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .edit-input {
+    padding: 8px;
+    width: 100%;
     border: 1px solid #ddd;
-}
-
-.helper-text {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-}
-
-@media (max-width: 600px) {
-    .action-buttons {
-        flex-direction: column;
-    }
-}
+    border-radius: 4px;
+  }
+  
+  .add-category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .form-buttons {
+    display: flex;
+    gap: 10px;
+  }

@@ -135,7 +135,7 @@ async function getCategories(url: string): Promise<Category[]> {
   if (!Array.isArray(data)) return [];
 
   return data.map((category: any) => ({
-    id: category._id,
+    _id: category._id,
     name: category.name,
   }));
 }
