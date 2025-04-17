@@ -15,6 +15,6 @@ export interface Product {
   price: number;
   description: string;
   images: string[];
-  stock_quantity: number;
+  stock: number;
   sub_category?: SubCategory; // Thêm sub_category
 }

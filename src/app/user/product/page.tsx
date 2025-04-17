@@ -170,14 +170,11 @@ export default function ProductPage() {
                       height={200}
                       className={styles["product-image"]}
                     />
-                    <div className={styles["product-details"]}>
+                    <div className={styles["  "]}>
                       <h4 className={styles["product-item-name"]}>{product.name}</h4>
                       <div className={styles["product-card"]}>
                         <p className={styles.price}>{formatPrice(product.price)}</p>
-                        <span
-                          title="Thêm vào Giỏ Hàng"
-                          className={styles.cartIcon}
-                        >
+                        <span title="Thêm vào Giỏ Hàng" className={styles.cartIcon}>
                           <i className="fas fa-shopping-cart"></i>
                         </span>
                       </div>
@@ -197,19 +194,46 @@ export default function ProductPage() {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
               >
-                &lt;
+                <i className="fa-solid fa-chevron-left"></i>
               </button>
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={`page-${index + 1}`}
-                  className={`${styles["page-btn"]} ${
-                    currentPage === index + 1 ? styles.active : ""
-                  }`}
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {(() => {
+                const paginationRange = [];
+                let start = Math.max(1, currentPage - 1);
+                let end = Math.min(totalPages, start + 2);
+                if (end - start < 2) {
+                  start = Math.max(1, end - 2);
+                }
+
+                if (start > 1) {
+                  paginationRange.push(
+                    <span key="start-ellipsis" className={styles["ellipsis"]}>
+                      ...
+                    </span>
+                  );
+                }
+
+                for (let i = start; i <= end; i++) {
+                  paginationRange.push(
+                    <button
+                      key={`page-${i}`}
+                      className={`${styles["page-btn"]} ${currentPage === i ? styles.active : ""}`}
+                      onClick={() => setCurrentPage(i)}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                if (end < totalPages) {
+                  paginationRange.push(
+                    <span key="end-ellipsis" className={styles["ellipsis"]}>
+                      ...
+                    </span>
+                  );
+                }
+
+                return paginationRange;
+              })()}
               <button
                 className={`${styles["page-btn"]} ${
                   currentPage === totalPages ? styles.disabled : ""
@@ -217,7 +241,7 @@ export default function ProductPage() {
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
               >
-                &gt;
+                <i className="fa-solid fa-chevron-right"></i>
               </button>
             </div>
           )}
@@ -246,7 +270,9 @@ export default function ProductPage() {
                     />
                   </div>
                   <div className={styles["best-selling-details"]}>
-                    <h3 className={styles["best-selling-product-name"]}>{product.name}</h3>
+                    <h3 className={styles["best-selling-product-name"]}>
+                      {product.name}
+                    </h3>
                     <p className={styles["best-selling-price"]}>{formatPrice(product.price)}</p>
                   </div>
                 </div>

@@ -3,9 +3,15 @@
 import Image from "next/image";
 import "./page.css";
 import { useState, useEffect, SetStateAction } from "react";
+import Link from "next/link";
+import { Product } from "@/app/components/product_interface"; // Import interface Product
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+  const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const slides = [
     "/images/bannernav1.png",
     "/images/bannernav2.png",
@@ -15,13 +21,65 @@ export default function Home() {
     "/images/bannernav6.png",
   ];
 
-  // Tự động chuyển slide sau mỗi 5 giây
+  // Tự động chuyển slide sau mỗi 7 giây
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 7000);
     return () => clearInterval(interval);
   }, [slides.length]);
+
+  // Lấy dữ liệu sản phẩm mới nhất từ API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("https://api-zeal.onrender.com/api/products");
+        const allProducts: Product[] = await response.json();
+        
+        // Sắp xếp sản phẩm mới nhất theo _id (timestamp)
+        const sortedProducts = allProducts.sort((a, b) => {
+          const timestampA = parseInt(a._id.substring(0, 8), 16);
+          const timestampB = parseInt(b._id.substring(0, 8), 16);
+          return timestampB - timestampA; 
+        });
+        
+        // Lấy 3 sản phẩm mới nhất
+        const latestProducts = sortedProducts.slice(0, 3);
+        setNewProducts(latestProducts);
+        
+        // Lọc và sắp xếp sản phẩm theo stock (giảm dần)
+        const productsWithStock = allProducts.filter(product => 
+          typeof product.stock === 'number' && product.stock > 0
+        );
+        
+        const sortedByStock = [...productsWithStock].sort((a, b) => b.stock - a.stock);
+        const topStockProducts = sortedByStock.slice(0, 4);
+        
+        console.log("Top stock products:", topStockProducts); // Debug log
+        setBestSellingProducts(topStockProducts);
+        
+        setLoading(false);
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm:", error);
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
+  // Định dạng giá tiền
+  const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
+  };
+
+  // Xử lý URL ảnh
+  const getImageUrl = (image: string): string => {
+    if (!image) return "/api/placeholder/200/200"; // Ảnh mặc định nếu không có
+    if (image.startsWith("/")) return image;
+    return `/images/${image}`;
+  };
 
   // Xử lý khi nhấn mũi tên trái
   const goToPrevious = () => {
@@ -37,6 +95,7 @@ export default function Home() {
   const goToSlide = (index: SetStateAction<number>) => {
     setCurrentSlide(index);
   };
+
   return (
     <div>
       <div className="container">
@@ -56,38 +115,30 @@ export default function Home() {
 
             {/* Product slider */}
             <div className="new-products">
-            
               <div className="new-products-grid">
-                <div className="new-product-card">
-                  <div className="new-product-badge">New</div>
-                  <div className="new-product-image">
-                    <img src="#" alt="New Product" />
-                  </div>
-                  <div className="new-product-details">
-                    <h3 className="new-product-name">Kem Dưỡng Da Cao Cấp</h3>
-                    <p className="new-product-price">250.000đ</p>
-                  </div>
-                </div>
-                <div className="new-product-card">
-                  <div className="new-product-badge">New</div>
-                  <div className="new-product-image">
-                    <img src="#" alt="New Product" />
-                  </div>
-                  <div className="new-product-details">
-                    <h3 className="new-product-name">Serum Dưỡng Ẩm Chuyên Sâu</h3>
-                    <p className="new-product-price">320.000đ</p>
-                  </div>
-                </div>
-                <div className="new-product-card">
-                  <div className="new-product-badge">New</div>
-                  <div className="new-product-image">
-                    <img src="#" alt="New Product" />
-                  </div>
-                  <div className="new-product-details">
-                    <h3 className="new-product-name">Sữa Rửa Mặt Thiên Nhiên</h3>
-                    <p className="new-product-price">180.000đ</p>
-                  </div>
-                </div>
+                {loading ? (
+                  <p>Đang tải sản phẩm mới...</p>
+                ) : newProducts.length > 0 ? (
+                  newProducts.map((product) => (
+                    <Link href={`/user/detail/${product._id}`} key={product._id}>
+                      <div className="new-product-card">
+                        <div className="new-product-badge">New</div>
+                        <div className="new-product-image">
+                          <img 
+                            src={getImageUrl(product.images?.[0] || "")} 
+                            alt={product.name} 
+                          />
+                        </div>
+                        <div className="new-product-details">
+                          <h3 className="new-product-name">{product.name}</h3>
+                          <p className="new-product-price">{formatPrice(product.price)}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <p>Không tìm thấy sản phẩm mới.</p>
+                )}
               </div>
             </div>
           </div>
@@ -95,27 +146,19 @@ export default function Home() {
           {/* Features section */}
           <div className="features-section">
             <div className="feature-card">
-              <h4 className="feature-title">Giao hàng toàn quốc
-                
-              </h4>
+              <h4 className="feature-title">Giao hàng toàn quốc</h4>
               <br /><h4 className="feture-2">Miễn phí giao hàng </h4>
             </div>
             <div className="feature-card">
-              <h4 className="feature-title">Bảo đảm chất lượng
-              </h4>
+              <h4 className="feature-title">Bảo đảm chất lượng</h4>
               <br /><h4 className="feture-2">Sản phẩm làm từ thiên nhiên</h4>
             </div>
             <div className="feature-card">
-              <h4 className="feature-title">Đổi trả sản phẩm
-              
-              </h4><br /><h4 className="feture-2">Với sản phẩm lỗi sản xuất </h4>
-           
-
+              <h4 className="feature-title">Đổi trả sản phẩm</h4>
+              <br /><h4 className="feture-2">Với sản phẩm lỗi sản xuất </h4>
             </div>
             <div className="feature-card">
-              <h4 className="feature-title">Hỗ trợ khách hàng
-                
-              </h4>
+              <h4 className="feature-title">Hỗ trợ khách hàng</h4>
               <br /><h4 className="feture-2">Tư vấn nhiệt tình 24/7 </h4>
             </div>
           </div>
@@ -139,17 +182,17 @@ export default function Home() {
             ))}
           </div>
           <div className="arrow left" onClick={goToPrevious}>
-          <i className="fa-solid fa-arrow-left"></i>
+            <i className="fa-solid fa-arrow-left"></i>
           </div>
           <div className="arrow right" onClick={goToNext}>
-          <i className="fa-solid fa-arrow-right"></i>
+            <i className="fa-solid fa-arrow-right"></i>
           </div>
         </section>
         <div className="container">
           <section className="botanical-gallery">
             <div className="botanical-frame-left">
               <img
-                src="/images//cosmetics nature_1.png"
+                src="/images/cosmetics nature_1.png"
                 alt="Sản phẩm Pure Botanica với lá xanh và hoa"
                 className="botanical-photo"
               />
@@ -160,7 +203,7 @@ export default function Home() {
 
             <div className="botanical-frame-right">
               <img
-                src="/images//cosmetics nature_1.png"
+                src="/images/cosmetics nature_1.png"
                 alt="Bộ sưu tập sản phẩm Pure Botanica"
                 className="botanical-photo"
               />
@@ -171,53 +214,39 @@ export default function Home() {
           </section>
 
           <div className="best-selling-products">
-            <h2 className="best-selling-section-title">Sản phẩm bán chạy</h2>
+            <h2 className="best-selling-section-title">Bạn có thể thích</h2>
             <div className="best-selling-grid">
-              <div className="best-selling-card">
-                <div className="best-selling-badge">Hot</div>
-                <div className="best-selling-image">
-                  <img src="/api/placeholder/200/200" alt="Product Image" />
-                </div>
-                <div className="best-selling-details">
-                  <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
-                  <p className="best-selling-price">140.000đ</p>
-                </div>
-              </div>
-              <div className="best-selling-card">
-                <div className="best-selling-badge">Hot</div>
-                <div className="best-selling-image">
-                  <img src="/api/placeholder/200/200" alt="Product Image" />
-                </div>
-                <div className="best-selling-details">
-                  <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
-                  <p className="best-selling-price">140.000đ</p>
-                </div>
-              </div>
-              <div className="best-selling-card">
-                <div className="best-selling-badge">Hot</div>
-                <div className="best-selling-image">
-                  <img src="/api/placeholder/200/200" alt="Product Image" />
-                </div>
-                <div className="best-selling-details">
-                  <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
-                  <p className="best-selling-price">140.000đ</p>
-                </div>
-              </div>
-              <div className="best-selling-card">
-                <div className="best-selling-badge">Hot</div>
-                <div className="best-selling-image">
-                  <img src="#" alt="Product Image" />
-                </div>
-                <div className="best-selling-details">
-                  <h3 className="best-selling-name">Kem Trang Điểm Thủy Tinh 3in1 Tích Hợp</h3>
-                  <p className="best-selling-price">140.000đ</p>
-                </div>
-              </div>
+              {loading ? (
+                <p>Đang tải sản phẩm đề xuất...</p>
+              ) : bestSellingProducts.length > 0 ? (
+                bestSellingProducts.map((product) => (
+                  <Link href={`/user/detail/${product._id}`} key={product._id}>
+                    <div className="best-selling-card">
+                      <div className="best-selling-badge">Hot</div>
+                      <div className="best-selling-image">
+                        <img 
+                          src={getImageUrl(product.images?.[0] || "")} 
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="best-selling-details">
+                        <h3 className="best-selling-name">{product.name}</h3>
+                        <p className="best-selling-price">
+                          {formatPrice(product.price)}
+                       
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p>Không tìm thấy sản phẩm bán chạy.</p>
+              )}
             </div>
           </div>
 
           <div className="brand-value-section">
-            <img src="/images//thuonghieu1.png" alt="Background with Natural Ingredients" className="brand-background" />
+            <img src="/images/thuonghieu1.png" alt="Background with Natural Ingredients" className="brand-background" />
             <div className="brand-content">
               <h2 className="brand-title">Giá trị thương hiệu</h2>
               <p className="brand-description">
@@ -230,10 +259,10 @@ export default function Home() {
         <div className="brands">
           <h2>Thương hiệu nổi bật</h2>
           <div className="brands2">
-          <img src="/images/comem 1.png" alt="" />
-          <img src="/images/cocoon 1.png" alt="" />
-          <img src="/images/Logo_Bio_LAK 1.png" alt="" />
-          <img src="/images/Logo-Thorakao-Ngang-500-1 1.png" alt="" />
+            <img src="/images/comem 1.png" alt="Thương hiệu Comem" />
+            <img src="/images/cocoon 1.png" alt="Thương hiệu Cocoon" />
+            <img src="/images/Logo_Bio_LAK 1.png" alt="Thương hiệu Bio LAK" />
+            <img src="/images/Logo-Thorakao-Ngang-500-1 1.png" alt="Thương hiệu Thorakao" />
           </div>
         </div>
       </div>
