@@ -1,34 +1,68 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import "./add_category.css";
 
-export default function AddCatePage() {
-    return (
-        <div className="container">
-            <h1>Thêm Danh Mục Mới</h1>
+export default function AddCategory() {
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-            <form>
-                <div className="form-group">
-                    <label htmlFor="category-name">
-                        Tên danh mục <span style={{ color: "red" }}>*</span>
-                    </label>
-                    <input type="text" id="category-name" placeholder="Nhập tên danh mục" required />
-                </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-                <div className="form-group">
-                    <label htmlFor="parent-category">Danh mục cha</label>
-                    <select id="parent-category">
-                        <option value="0">-- Không có --</option>
-                        <option value="1">Mỹ Phẩm</option>
-                        <option value="2">Sức Khỏe &amp; Làm Đẹp</option>
-                        <option value="3">Chăm Sóc Da</option>
-                    </select>
-                    <p className="helper-text">Chọn danh mục cha nếu đây là danh mục con.</p>
-                </div>
+    try {
+      const res = await fetch("https://api-zeal.onrender.com/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
 
-                <div className="action-buttons">
-                    <button type="submit" className="btn btn-primary">Lưu danh mục</button>
-                    <button type="button" className="btn btn-cancel">Hủy</button>
-                </div>
-            </form>
+      if (res.ok) {
+        alert("Thêm danh mục thành công!");
+        router.push("/admin/category");
+      } else {
+        alert("Thêm danh mục thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm danh mục:", error);
+      alert("Đã xảy ra lỗi khi thêm danh mục.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container-category">
+      <h2>Thêm Danh Mục Mới</h2>
+      <form onSubmit={handleSubmit} className="add-category-form">
+        <div className="form-group">
+          <label htmlFor="name">Tên Danh Mục</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            placeholder="Nhập tên danh mục"
+          />
         </div>
-    );
+        <div className="form-buttons">
+          <button type="submit" className="btn-add" disabled={loading}>
+            {loading ? "Đang thêm..." : "Thêm Danh Mục"}
+          </button>
+          <button
+            type="button"
+            className="btn-cancel"
+            onClick={() => router.push("/admin/category")}
+          >
+            Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }

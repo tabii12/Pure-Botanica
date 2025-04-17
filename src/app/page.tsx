@@ -12,5 +12,11 @@ export default function Home() {
     router.push("/user");
   }, [router]);
 
-  return null; // Không cần render gì trên trang này
+  return  (
+    <body>
+    <html lang="vi">
+     <h1>đang chuyển trang</h1>
+    </html>
+    </body>
+  );
 }
