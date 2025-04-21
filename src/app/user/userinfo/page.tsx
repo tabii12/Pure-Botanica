@@ -1,137 +1,63 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
-import styles from "./Userinfo.module.css";
+import Link from "next/link";
 
-// Khai báo kiểu cho đơn hàng
-interface Order {
-  _id: string;
-  createdAt: string;
-  totalPrice: number;
-  status: string;
+interface User {
+    _id: string;
+    username: string;
+    email: string;
+    phone: string;
+    status: string;
+    listOrder: any[];
+    birthday: string | null;
 }
 
-// Khai báo kiểu cho payload của token
-interface CustomJwtPayload {
-  id?: string;
-  email?: string;
-  role?: string;
-}
+export default function UserProfile() {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-const API_URL = "https://api-zeal.onrender.com/api";
-
-export default function UserInfo() {
-  const router = useRouter();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch lịch sử đơn hàng
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const token = localStorage.getItem("token");
-
-      // Nếu không có token, chuyển hướng về trang đăng nhập
-      if (!token) {
-        router.push("/user/login");
-        return;
-      }
-
-      try {
-        // Decode token để lấy userId
-        const decodedToken: CustomJwtPayload = jwtDecode(token);
-        const userId = decodedToken.id;
-
-        if (!userId) {
-          throw new Error("Không tìm thấy ID người dùng trong token");
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Không có token. Vui lòng đăng nhập.");
+            setLoading(false);
+            return;
         }
 
-        // Lấy lịch sử đơn hàng
-        const ordersRes = await fetch(`${API_URL}/orders/user/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        fetch("https://api-zeal.onrender.com/api/users/userinfo", {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setUser(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError("Lỗi khi tải thông tin người dùng.");
+                setLoading(false);
+            });
+    }, []);
 
-        if (!ordersRes.ok) {
-          throw new Error("Không thể lấy lịch sử đơn hàng");
-        }
+    if (loading) return <p>Đang tải thông tin...</p>;
 
-        const ordersData = await ordersRes.json();
-        setOrders(ordersData.data || []);
-        setIsLoading(false);
-      } catch (err: any) {
-        console.error("Lỗi khi lấy đơn hàng:", err);
-        setError("Đã xảy ra lỗi khi tải lịch sử đơn hàng.");
-        localStorage.removeItem("token");
-        router.push("/user/login");
-      }
-    };
+    if (error) return <p>{error}</p>;
 
-    fetchOrders();
-  }, [router]);
+    if (!user) return <p>Không tìm thấy thông tin người dùng.</p>;
 
-  // Xử lý đăng xuất
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    router.push("/user/login");
-  };
+    return (
+        <div>
+            <h2>Thông tin người dùng</h2>
+            <p><strong>Tên:</strong> {user.username}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>SĐT:</strong> {user.phone}</p>
+            <p><strong>Trạng thái:</strong> {user.status}</p>
+            <p><strong>Ngày sinh:</strong> {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Chưa cập nhật"}</p>
+            <p><strong>Đơn hàng:</strong> {user.listOrder.length === 0 ? "Chưa có đơn hàng" : user.listOrder.length + " đơn hàng"}</p>
 
-  // Trạng thái khi đang tải
-  if (isLoading) {
-    return <div className={styles.loading}>Đang tải...</div>;
-  }
-
-  // Nếu có lỗi
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
-  }
-
-  return (
-    <div className={styles["user-info-container"]}>
-      <div className={styles["user-header"]}>
-        <h2>Lịch sử đơn hàng</h2>
-        <button className={styles["logout-btn"]} onClick={handleSignOut}>
-          Đăng xuất
-        </button>
-      </div>
-
-      <div className={styles["order-history"]}>
-        {orders.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Mã đơn</th>
-                <th>Ngày đặt</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id.slice(-6)}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td>{order.totalPrice.toLocaleString()} VNĐ</td>
-                  <td>
-                    <span
-                      className={`${styles.status} ${
-                        styles[order.status.toLowerCase()]
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className={styles["no-orders"]}>Chưa có đơn hàng</p>
-        )}
-      </div>
-    </div>
-  );
+            <Link href={`/user/edituser/${user._id}`}>
+                <button>Chỉnh sửa thông tin</button>
+            </Link>
+        </div>
+    );
 }
