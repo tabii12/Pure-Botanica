@@ -1,5 +1,6 @@
 import "./layout.css";
 
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -33,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <a href="/admin/customer" className="menu-item">
               <span>Khách hàng</span>
             </a>
-            <a href="/admin/user" className="menu-item active">
+            <a href="/admin/admin" className="menu-item active">
               <span>Admin</span>
             </a>
             <a href="/user" className="menu-item">

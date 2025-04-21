@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import "./customer.css";
+import "./admin.css";
 
 export default function Customer() {
   interface Customer {
@@ -64,7 +64,7 @@ export default function Customer() {
       })
       .then((data) => {
         if (data) {
-          const filteredData = data.filter((customer: Customer) => customer.role === "user");
+          const filteredData = data.filter((customer: Customer) => customer.role === "admin");
           setCustomers(filteredData);
         }
       })
