@@ -1,8 +1,14 @@
 "use client";
 
+"use client";
+
 import React, { useState } from 'react';
 import styles from './contact.module.css';
-import Link from 'next/link';
+import emailjs from '@emailjs/browser';
+
+const SERVICE_ID = 'service_trjvfth';
+const TEMPLATE_ID = 'template_kzvwn07';
+const PUBLIC_KEY = '5fm4LNMvD5wK_zt6a';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +19,7 @@ const ContactPage: React.FC = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; 
     setFormData(prevState => ({
       ...prevState,
       [name]: value
@@ -22,10 +28,16 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to a server
-    alert('Cảm ơn bạn đã liên hệ với Pure Botanica!');
-    setFormData({ name: '', phone: '', email: '', message: '' });
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, formData, PUBLIC_KEY)
+      .then(() => {
+        alert('Cảm ơn bạn đã liên hệ với Pure Botanica!');
+        setFormData({ name: '', phone: '', email: '', message: '' });
+      })
+      .catch((error) => {
+        console.error('EmailJS Error:', error);
+        alert('Đã xảy ra lỗi khi gửi thông tin. Vui lòng thử lại sau.');
+      });
   };
 
   return (
