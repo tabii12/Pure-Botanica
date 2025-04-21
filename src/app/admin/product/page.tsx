@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import "../product/product.css";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Category {
   _id: string;
@@ -10,9 +10,11 @@ interface Category {
 }
 
 interface Product {
+  oldImages: boolean;
   _id: string;
   name: string;
   price: number;
+  discountPrice?: number;
   stock: number;
   images?: string[];
   category?: Category;
@@ -36,6 +38,8 @@ export default function ProductPage() {
   const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const productsPerPage = 9;
 
+  const router = useRouter();
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -46,19 +50,6 @@ export default function ProductPage() {
     setTimeout(() => {
       setNotification({ show: false, message: "", type: "" });
     }, 3000);
-  };
-
-  const getAuthToken = () => {
-    return localStorage.getItem("authToken") || "";
-  };
-
-  const getHeaders = () => {
-    const headers: HeadersInit = {};
-    const token = getAuthToken();
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-    return headers;
   };
 
   const fetchProducts = async () => {
@@ -103,21 +94,12 @@ export default function ProductPage() {
   };
 
   const validateForm = () => {
-    if (!editProduct?.name?.trim()) {
-      return "Tên sản phẩm không được để trống";
-    }
-    if (editProduct?.price === undefined || editProduct.price < 0) {
-      return "Giá sản phẩm không hợp lệ";
-    }
-    if (editProduct?.stock === undefined || editProduct.stock < 0) {
-      return "Số lượng không hợp lệ";
-    }
-    if (!editProduct?.category?._id) {
-      return "Vui lòng chọn danh mục";
-    }
-    if (editProduct?.newImages && editProduct.newImages.length > 4) {
-      return "Chỉ được chọn tối đa 4 ảnh";
-    }
+    if (editProduct?.discountPrice != null && editProduct.discountPrice < 0)return "Giá khuyến mãi không hợp lệ";
+    if (!editProduct?.name?.trim()) return "Tên sản phẩm không được để trống";
+    if (editProduct?.price == null || editProduct.price < 0) return "Giá sản phẩm không hợp lệ";
+    if (editProduct?.stock == null || editProduct.stock < 0) return "Số lượng không hợp lệ";
+    if (!editProduct?.category || !editProduct.category._id) return "Vui lòng chọn danh mục";
+    if (editProduct?.newImages && editProduct.newImages.length > 4) return "Chỉ được chọn tối đa 4 ảnh";
     return null;
   };
 
@@ -128,18 +110,20 @@ export default function ProductPage() {
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!editProduct || !editProduct._id) return;
-
+    if (!editProduct || !editProduct._id) {
+      showNotification("Không tìm thấy sản phẩm để cập nhật", "error");
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
-
-      // Kiểm tra dữ liệu trước khi gửi
+    
+      // Kiểm tra dữ liệu
       const validationError = validateForm();
       if (validationError) {
         throw new Error(validationError);
       }
-
+    
       const formData = new FormData();
       formData.append("name", editProduct.name || "");
       formData.append("price", editProduct.price?.toString() || "0");
@@ -159,8 +143,21 @@ export default function ProductPage() {
       if (editProduct.special && editProduct.special.length > 0) {
         formData.append("special", JSON.stringify(editProduct.special));
       }
-      if (editProduct.newImages && editProduct.newImages.length > 0) {
-        editProduct.newImages.forEach((file) => {
+      if (editProduct.discountPrice != null && editProduct.discountPrice !== 0) {
+        formData.append("discountPrice", editProduct.discountPrice.toString());
+      }
+    
+      // Thêm ảnh cũ vào FormData
+      if (editProduct.oldImages && Array.isArray(editProduct.oldImages)) {
+        formData.append("oldImages", JSON.stringify(editProduct.oldImages));
+      }
+    
+      // Xử lý ảnh mới (nếu có)
+      if (editProduct.newImages && Array.isArray(editProduct.newImages) && editProduct.newImages.length > 0) {
+        editProduct.newImages.forEach((file, index) => {
+          if (!file || !file.size || !file.type) {
+            throw new Error(`Tệp ảnh ${file?.name || `vị trí ${index}`} không hợp lệ`);
+          }
           if (file.size > 5 * 1024 * 1024) {
             throw new Error(`Ảnh ${file.name} vượt quá giới hạn 5MB`);
           }
@@ -169,40 +166,32 @@ export default function ProductPage() {
           }
           formData.append("images", file);
         });
-      } else if (editProduct.images && editProduct.images.length > 0) {
-        // Gửi mảng ảnh hiện tại nếu không có ảnh mới
-        formData.append("images", JSON.stringify(editProduct.images));
       }
-
-      console.log("Sending FormData:", Array.from(formData.entries())); // Debug FormData
-
+    
+      console.log("FormData entries:", Array.from(formData.entries()));
+    
       const response = await fetch(`https://api-zeal.onrender.com/api/products/${editProduct._id}`, {
         method: "PUT",
-        headers: {
-          Authorization: getHeaders()["Authorization"],
-        },
         body: formData,
       });
-
+    
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("API Error Response:", errorData);
-        throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
+        const errorText = await response.text();
+        console.error("API Error Response:", errorText);
+        throw new Error(`Lỗi HTTP: ${response.status} - ${errorText}`);
       }
-
+    
       const updatedProduct = await response.json();
-      console.log("Updated Product:", updatedProduct); // Debug response
-
+      console.log("Updated Product:", updatedProduct);
+    
       setProducts(products.map((p) => (p._id === editProduct._id ? updatedProduct : p)));
       setIsEditing(false);
       setEditProduct(null);
       showNotification("Cập nhật sản phẩm thành công", "success");
-      router.replace(router.asPath);
+      router.refresh();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Lỗi không xác định";
-      console.error("Lỗi khi cập nhật sản phẩm:", errorMessage);
-      setError(errorMessage);
-      showNotification(errorMessage, "error");
+      console.error("Error updating product:", error);
+      setError("Có lỗi xảy ra khi cập nhật sản phẩm.");
     } finally {
       setLoading(false);
     }
@@ -218,14 +207,14 @@ export default function ProductPage() {
 
     try {
       setLoading(true);
+
       const response = await fetch(`https://api-zeal.onrender.com/api/products/${deleteId}`, {
         method: "DELETE",
-        headers: getHeaders(),
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`Lỗi HTTP: ${response.status} - ${errorText}`);
       }
 
       setProducts(products.filter((product) => product._id !== deleteId));
@@ -380,6 +369,14 @@ export default function ProductPage() {
                 required
                 min="0"
               />
+              <label>Giá khuyến mãi (nếu có)</label>
+              <input
+                type="number"
+                value={editProduct.discountPrice ?? ""}
+                onChange={(e) =>
+                  setEditProduct({ ...editProduct, discountPrice: Number(e.target.value) || 0 })
+                }
+                />
               <label>Số lượng</label>
               <input
                 type="number"
@@ -406,13 +403,11 @@ export default function ProductPage() {
                   </option>
                 ))}
               </select>
-
               <label>Mô tả</label>
               <textarea
                 value={editProduct.description || ""}
                 onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
-              ></textarea>
-
+              />
               <label>Thành phần (phân cách bằng dấu phẩy)</label>
               <input
                 type="text"
@@ -420,11 +415,10 @@ export default function ProductPage() {
                 onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    ingredients: e.target.value.split(",").map((item) => item.trim()),
+                    ingredients: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
                   })
                 }
               />
-
               <label>Hướng dẫn sử dụng (phân cách bằng dấu phẩy)</label>
               <input
                 type="text"
@@ -432,11 +426,10 @@ export default function ProductPage() {
                 onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    usage_instructions: e.target.value.split(",").map((item) => item.trim()),
+                    usage_instructions: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
                   })
                 }
               />
-
               <label>Điểm đặc biệt (phân cách bằng dấu phẩy)</label>
               <input
                 type="text"
@@ -444,11 +437,10 @@ export default function ProductPage() {
                 onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    special: e.target.value.split(",").map((item) => item.trim()),
+                    special: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
                   })
                 }
               />
-
               <label>Ảnh mới (tối đa 4 ảnh)</label>
               <input
                 type="file"
@@ -461,7 +453,6 @@ export default function ProductPage() {
                   })
                 }
               />
-
               <div className="modal-actions">
                 <button className="confirm-btn" type="submit" disabled={loading}>
                   Cập nhật

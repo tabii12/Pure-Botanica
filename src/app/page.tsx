@@ -2,21 +2,28 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Html } from "next/document";
 
-export default function Home() {
+export default function RedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Chuyển hướng đến /user
-    router.push("/user");
+    const timer = setTimeout(() => {
+      router.push("/user");
+    }, 2000); // Chuyển trang sau 2 giây
+
+    return () => clearTimeout(timer); // Cleanup nếu component unmount
   }, [router]);
 
-  return  (
-    <body>
-    <html lang="vi">
-     <h1>đang chuyển trang</h1>
-    </html>
-    </body>
+  return (
+    <div style={{
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontFamily: "sans-serif",
+      fontSize: "1.5rem"
+    }}>
+      <p>Đang chuyển trang, vui lòng chờ...</p>
+    </div>
   );
 }
