@@ -41,11 +41,10 @@ export default function ProductPage() {
     fetchProducts();
   }, []);
 
-  // Fetch danh mục
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("https://db-pure-bonanica.onrender.com/categories");
+        const res = await fetch("https://api-zeal.onrender.com/api/categories");
         const data = await res.json();
         const categoryNames = data.map((cat: any) => cat.name);
         setCategories(["Tất cả", ...categoryNames]);
@@ -62,9 +61,8 @@ export default function ProductPage() {
       setFilteredProducts(products);
       setActiveCategory(null);
     } else {
-      // Lọc sản phẩm với kiểm tra an toàn
       const filtered = products.filter((product) => {
-        // Kiểm tra nếu product.category tồn tại và có name
+  
         return product.category && product.category.name === category;
       });
       setFilteredProducts(filtered.length > 0 ? filtered : []);
@@ -96,9 +94,7 @@ export default function ProductPage() {
       <section className={styles.productBanner}>
         <img src="/images/productBanner.png" alt="Banner" className={styles["banner-image"]} />
       </section>
-
       <h1 className={styles["product-main-title"]}>Danh sách sản phẩm</h1>
-
       <div className={styles.containerBox}>
         <aside className={styles.productSidebar}>
           <h3 className={styles["sidebar-title"]}>DANH MỤC SẢN PHẨM</h3>
@@ -122,7 +118,6 @@ export default function ProductPage() {
             ))}
           </ul>
         </aside>
-
         <section className={styles.productContainer}>
           <div className={styles.productGrid}>
             {isLoading ? (
@@ -162,7 +157,6 @@ export default function ProductPage() {
               </p>
             )}
           </div>
-
           {totalPages > 1 && (
             <div className={styles.productPagination}>
               <button
@@ -172,7 +166,6 @@ export default function ProductPage() {
               >
                 <i className="fa-solid fa-chevron-left"></i>
               </button>
-
               {(() => {
                 const paginationRange = [];
                 let start = Math.max(1, currentPage - 1);
@@ -180,7 +173,6 @@ export default function ProductPage() {
                 if (end - start < 2) {
                   start = Math.max(1, end - 2);
                 }
-
                 if (start > 1) {
                   paginationRange.push(
                     <span key="start-ellipsis" className={styles["ellipsis"]}>
@@ -188,7 +180,6 @@ export default function ProductPage() {
                     </span>
                   );
                 }
-
                 for (let i = start; i <= end; i++) {
                   paginationRange.push(
                     <button

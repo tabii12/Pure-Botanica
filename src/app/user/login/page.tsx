@@ -22,7 +22,7 @@ export default function LoginPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
+        setError("");  // Reset lỗi trước khi gửi yêu cầu
 
         try {
             const res = await fetch("https://api-zeal.onrender.com/api/users/login", {
@@ -50,9 +50,9 @@ export default function LoginPage() {
             }
 
             // Lưu thông tin vào localStorage
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", userRole);
-            localStorage.setItem("email", userEmail || "");
+            localStorage.setItem("token", data.token);  // Lưu token vào localStorage
+            localStorage.setItem("role", userRole);    // Lưu role của user
+            localStorage.setItem("email", userEmail || "");  // Lưu email người dùng
 
             // Chuyển hướng theo quyền
             if (userRole === "admin") {

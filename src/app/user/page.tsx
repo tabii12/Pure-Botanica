@@ -197,13 +197,14 @@ export default function Home() {
                 className="botanical-photo"
               />
               <div className="botanical-caption">
-                Hãy để Pure Botanica nâng niu làn da của bạn với 100% trích xuất từ thiên nhiên
+                Hãy để Pure Botanica nâng niu làn da của bạn <br />
+                   với 100% trích xuất từ thiên nhiên
               </div>
             </div>
 
             <div className="botanical-frame-right">
               <img
-                src="/images/cosmetics nature_1.png"
+                src="/images/cosmetics-nature-2.png"
                 alt="Bộ sưu tập sản phẩm Pure Botanica"
                 className="botanical-photo"
               />

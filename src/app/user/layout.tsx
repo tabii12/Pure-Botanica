@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const category: Category[] = await getCategories("https://db-pure-bonanica.onrender.com/categories");
+  const category: Category[] = await getCategories("https://api-zeal.onrender.com/api/categories");
 
   return (
     <html lang="en">
@@ -53,7 +53,7 @@ export default async function RootLayout({
                 <CategoryList categories={category} />
               </div>
               <Link href="/user/about">Về chúng tôi</Link>
-              <Link href="#">Liên hệ</Link>
+              <Link href="/user/contact">Liên hệ</Link>
               <Link href="#">Tin tức</Link>
             </nav>
             <div className="icons">

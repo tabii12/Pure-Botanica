@@ -7,7 +7,6 @@ export default function CategoryList({ categories }: { categories: Category[];  
             {categories.map((category) => (
                 <div key={category._id} className="category-itemm">
                     <h2>{category.name}</h2>
-                
                 </div>
             ))}
         </div>

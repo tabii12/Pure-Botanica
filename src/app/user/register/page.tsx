@@ -1,10 +1,9 @@
 "use client";
 
-import "./register.css";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import styles from "./Register.module.css";
 
 export default function RegisterPage() {
     const [username, setName] = useState("");
@@ -57,69 +56,88 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="containerrr">
-            <div className="form-box">
-                <h2><strong>ĐĂNG KÝ</strong></h2>
+        <main className={styles.mainContent}>
+            <div className={styles.container}>
+                <div className={styles.formBox}>
+                    <h2 className={styles.title}><strong>ĐĂNG KÝ</strong></h2>
 
-                <button className="google-btn">
-                    <img src="/images/icons8-google-48.png" alt="Google Logo" /> Đăng ký với Google
-                </button>
+                    <button className={styles.googleBtn}>
+                        <img src="/images/icons8-google-48.png" alt="Google Logo" /> Đăng ký với Google
+                    </button>
 
-                <div className="divider">
-                    <hr />
-                    <span>Hoặc đăng ký bằng tài khoản</span>
-                    <hr />
+                    <div className={styles.divider}>
+                        <hr className={styles.dividerLine} />
+                        <span className={styles.dividerText}>Hoặc đăng ký bằng tài khoản</span>
+                        <hr className={styles.dividerLine} />
+                    </div>
+
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder="Họ và tên"
+                            value={username}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <small className={styles.small}>Vui lòng nhập họ và tên đầy đủ</small>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <small className={styles.small}>Ví dụ: example@domain.com</small>
+                        <input
+                            type="tel"
+                            placeholder="Số điện thoại"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <small className={styles.small}>Ví dụ: 0123456789</small>
+                        <input
+                            type="password"
+                            placeholder="Mật khẩu"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <small className={styles.small}>Mật khẩu phải có ít nhất 6 ký tự</small>
+                        <input
+                            type="password"
+                            placeholder="Nhập lại mật khẩu"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <small className={styles.small}>Vui lòng nhập lại mật khẩu giống trên</small>
+
+                        <div className={styles.policy}>
+                            <label className={styles.policyLabel}>
+                                <input type="checkbox" required className={styles.policyCheckbox} />
+                                Tôi đồng ý với <a href="/policy" className={styles.policyLink}>chính sách</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" className={styles.submitBtn}>ĐĂNG KÝ</button>
+                        {error && <p className={styles.errorMessage}>{error}</p>}
+
+                        <div className={styles.forgotPassword}>
+                            <Link href="/forgot-password" className={styles.forgotPasswordLink}>Quên mật khẩu?</Link>
+                        </div>
+
+                        <p className={styles.switchForm}>
+                            Đã có tài khoản? <Link href="/user/login" className={styles.switchFormLink}>Đăng nhập</Link>
+                        </p>
+                    </form>
                 </div>
-
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Họ và tên"
-                        value={username}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <br />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <br />
-                    <input
-                        type="tel"
-                        placeholder="Số điện thoại"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                    />
-                    <br />
-                    <input
-                        type="password"
-                        placeholder="Mật khẩu"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <br />
-                    <input
-                        type="password"
-                        placeholder="Nhập lại mật khẩu"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-
-                    <button type="submit" className="submit-btn">ĐĂNG KÝ</button>
-                    {error && <p className="error-message">{error}</p>}
-
-                    <p className="switch-form">
-                        Đã có tài khoản? <Link href="/login">Đăng nhập</Link>
-                    </p>
-                </form>
             </div>
-        </div>
+        </main>
     );
 }
