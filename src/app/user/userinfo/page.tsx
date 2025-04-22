@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import styles from "./Userinfo.module.css";
 
 interface User {
     _id: string;
@@ -39,24 +40,26 @@ export default function UserProfile() {
             });
     }, []);
 
-    if (loading) return <p>Đang tải thông tin...</p>;
+    if (loading) return <p className={styles.loading}>Đang tải thông tin...</p>;
 
-    if (error) return <p>{error}</p>;
+    if (error) return <p className={styles.error}>{error}</p>;
 
-    if (!user) return <p>Không tìm thấy thông tin người dùng.</p>;
+    if (!user) return <p className={styles.error}>Không tìm thấy thông tin người dùng.</p>;
 
     return (
-        <div>
-            <h2>Thông tin người dùng</h2>
-            <p><strong>Tên:</strong> {user.username}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>SĐT:</strong> {user.phone}</p>
-            <p><strong>Trạng thái:</strong> {user.status}</p>
-            <p><strong>Ngày sinh:</strong> {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Chưa cập nhật"}</p>
-            <p><strong>Đơn hàng:</strong> {user.listOrder.length === 0 ? "Chưa có đơn hàng" : user.listOrder.length + " đơn hàng"}</p>
+        <div className={styles.container}>
+            <h2 className={styles.title}>Thông tin người dùng</h2>
+            <div className={styles.userInfo}>
+                <p className={styles.infoRow}><strong>Tên:</strong> {user.username}</p>
+                <p className={styles.infoRow}><strong>Email:</strong> {user.email}</p>
+                <p className={styles.infoRow}><strong>SĐT:</strong> {user.phone}</p>
+                <p className={styles.infoRow}><strong>Trạng thái:</strong> {user.status}</p>
+                <p className={styles.infoRow}><strong>Ngày sinh:</strong> {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Chưa cập nhật"}</p>
+                <p className={styles.infoRow}><strong>Đơn hàng:</strong> {user.listOrder.length === 0 ? "Chưa có đơn hàng" : user.listOrder.length + " đơn hàng"}</p>
+            </div>
 
-            <Link href={`/user/edituser/${user._id}`}>
-                <button>Chỉnh sửa thông tin</button>
+            <Link href={`/user/edituser/${user._id}`} className={styles.editLink}>
+                <button className={styles.editButton}>Chỉnh sửa thông tin</button>
             </Link>
         </div>
     );

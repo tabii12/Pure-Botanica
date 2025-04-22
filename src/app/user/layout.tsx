@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Category } from "../components/category_interface";
-
+import { AuthProvider } from "./context/AuthContext";
 import CategoryList from "../components/category_list";
+import UserMenu from "../components/Usermenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default async function RootLayout({
 
       </head>
       <body>
+      <AuthProvider>
         <header>
           <div className="container header-container">
             <div className="logo">
@@ -56,11 +58,12 @@ export default async function RootLayout({
               <Link href="/user/contact">Liên hệ</Link>
               <Link href="#">Tin tức</Link>
             </nav>
-            <div className="icons">
-              <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
-              <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
-              <Link href="/user/login"><i className="fa-solid fa-user"></i></Link>
-            </div>
+          
+<div className="icons">
+  <Link href="/user/search"><i className="fa-solid fa-magnifying-glass"></i></Link>
+  <Link href="/user/cart"><i className="fa-solid fa-cart-shopping"></i></Link>
+  <UserMenu /> {/* Thay thế icon user bằng component UserMenu */}
+</div>
           </div>
         </header>
         <main>{children}</main>
@@ -121,6 +124,7 @@ export default async function RootLayout({
             </div>
           </div>
         </footer>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,60 +1,63 @@
+// contexts/AuthContext.tsx
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+import { jwtDecode } from "jwt-decode";
 
-// Định nghĩa kiểu cho thông tin người dùng
-interface User {
-    username: string;
-    email: string;
-    role: string;
-}
-
-// Định nghĩa kiểu cho AuthContext
 interface AuthContextType {
-    user: User | null;
-    login: (userData: User, token: string) => void;
-    logout: () => void;
+  isLoggedIn: boolean;
+  userInfo: {
+    id?: string;
+    email?: string;
+    role?: string; 
+  } | null;
+  logout: () => void;
 }
 
-// Tạo Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider để bọc ứng dụng
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState<AuthContextType["userInfo"]>(null);
 
-    // Khôi phục trạng thái đăng nhập từ localStorage khi tải trang
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const storedToken = localStorage.getItem("token");
-        if (storedUser && storedToken) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
-    const login = (userData: User, token: string) => {
-        setUser(userData);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(userData));
-    };
-
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
-
-// Hook để sử dụng AuthContext
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
+  useEffect(() => {
+    // Kiểm tra token trong localStorage khi component được mount
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token) as any;
+        setUserInfo({
+          id: decoded.id,
+          email: decoded.email,
+          role: decoded.role
+        });
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Invalid token:", error);
+        logout();
+      }
     }
-    return context;
-};
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("email");
+    setIsLoggedIn(false);
+    setUserInfo(null);
+    window.location.href = "/user"; // Chuyển về trang chủ
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, userInfo, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
