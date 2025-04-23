@@ -1,8 +1,4 @@
 /* === LAYOUT & CONTAINER === */
-.productManagementContainer {
-  position: relative;
-}
-
 .titleContainer {
   width: 1240px;
   height: 100px;
@@ -17,6 +13,7 @@
 }
 
 .addProductBtn {
+  z-index: 100;
   width: 150px;
   height: 35px;
   background-color: #004C59;
@@ -38,6 +35,7 @@
 
 /* === TABLE STYLING === */
 .productTable {
+  z-index: -1;
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;

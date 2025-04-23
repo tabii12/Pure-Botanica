@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import "./admin.css";
+import styles from "./admin.module.css"; // ✅ import CSS module
 
 export default function Customer() {
   interface Customer {
@@ -23,7 +23,6 @@ export default function Customer() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const router = useRouter();
 
-  // Kiểm tra quyền trước khi load dữ liệu
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -35,7 +34,6 @@ export default function Customer() {
     }
   }, [router]);
 
-  // Fetch dữ liệu khách hàng sau khi xác thực
   useEffect(() => {
     if (!isAuthorized) return;
 
@@ -48,15 +46,13 @@ export default function Customer() {
 
     fetch("https://api-zeal.onrender.com/api/users", {
       headers: {
-        "Authorization": `Bearer ${token}`, // Thêm token vào header
+        "Authorization": `Bearer ${token}`,
       },
     })
       .then((res) => {
         if (res.status === 401 || res.status === 403) {
           alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          localStorage.removeItem("email");
+          localStorage.clear();
           router.push("/login");
           return null;
         }
@@ -94,7 +90,7 @@ export default function Customer() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Thêm token vào header
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           status: selectedCustomer.status,
@@ -104,9 +100,7 @@ export default function Customer() {
 
       if (res.status === 401 || res.status === 403) {
         alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("email");
+        localStorage.clear();
         router.push("/login");
         return;
       }
@@ -130,15 +124,14 @@ export default function Customer() {
     }
   };
 
-  // Không hiển thị giao diện khi chưa xác thực
   if (!isAuthorized) return null;
 
   return (
     <>
-      <div className="title_container">
+      <div className={styles.titleContainer}>
         <h1>KHÁCH HÀNG</h1>
       </div>
-      <div className="table-container">
+      <div className={styles.tableContainer}>
         <table>
           <thead>
             <tr>
@@ -163,7 +156,7 @@ export default function Customer() {
                 <td>{customer.role}</td>
                 <td>{new Date(customer.createdAt).toLocaleDateString()}</td>
                 <td>
-                  <button className="btn" onClick={() => openModal(customer)}>Sửa</button>
+                  <button className={styles.btn} onClick={() => openModal(customer)}>Sửa</button>
                 </td>
               </tr>
             ))}
@@ -172,8 +165,8 @@ export default function Customer() {
       </div>
 
       {isModalOpen && selectedCustomer && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h3>Chỉnh sửa thông tin khách hàng</h3>
             <label>
               Trạng thái:
@@ -199,7 +192,7 @@ export default function Customer() {
                 <option value="admin">Admin</option>
               </select>
             </label>
-            <div className="modal-actions">
+            <div className={styles.modalActions}>
               <button onClick={updateCustomerInfo}>Lưu</button>
               <button onClick={() => setIsModalOpen(false)}>Hủy</button>
             </div>
