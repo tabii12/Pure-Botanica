@@ -1,17 +1,5 @@
 /* Reset mặc định */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-main {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-}
 
 .containerrr {
     display: flex;
