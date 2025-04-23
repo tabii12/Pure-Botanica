@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import "./category.css";
+import styles from "./category.module.css";
 import type { Category } from "@/app/components/category_interface";
 
 export default function Category() {
@@ -93,6 +93,7 @@ export default function Category() {
         );
         setEditingCategory(null);
         alert("Cập nhật danh mục thành công!");
+        window.location.reload();
       } else {
         alert("Cập nhật danh mục thất bại!");
       }
@@ -107,82 +108,82 @@ export default function Category() {
   }
 
   return (
-    <div className="container-category">
-      <div className="form-table-category">
-        <div className="name-table-category">
+    <div className={styles.containerCategory}>
+      <div className={styles.formTableCategory}>
+        <div className={styles.nameTableCategory}>
           <span>Danh Mục Sản Phẩm</span>
-          <div className="form-btn-add-new-category">
-            <button className="btn-add-new-category">
-              <a href="/admin/add_category">Thêm danh mục sản phẩm</a>
-            </button>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Tên Danh Mục</th>
-                <th>Hành Động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((category) => (
-                <tr key={category._id}>
-                  <td>
-                    {editingCategory?._id === category._id ? (
-                      <input
-                        type="text"
-                        value={editingCategory.name}
-                        onChange={(e) =>
-                          setEditingCategory({
-                            ...editingCategory,
-                            name: e.target.value,
-                          })
-                        }
-                        className="edit-input"
-                      />
-                    ) : (
-                      category.name
-                    )}
-                  </td>
-                  <td>
-                    {editingCategory?._id === category._id ? (
-                      <>
-                        <button
-                          className="btn-save"
-                          onClick={() =>
-                            handleUpdate(category._id, editingCategory.name)
-                          }
-                        >
-                          Lưu
-                        </button>
-                        <button
-                          className="btn-cancel"
-                          onClick={() => setEditingCategory(null)}
-                        >
-                          Hủy
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="btn-edit"
-                          onClick={() => handleEdit(category._id)}
-                        >
-                          Chỉnh sửa
-                        </button>
-                        <button
-                          className="btn-remove"
-                          onClick={() => handleDelete(category._id)}
-                        >
-                          Xóa
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
+        <div className={styles.formBtnAddNewCategory}>
+          <button className={styles.btnAddNewCategory}>
+            <a href="/admin/add_category">Thêm danh mục sản phẩm</a>
+          </button>
+        </div>
+        <table className={styles.categoryTable}>
+          <thead>
+            <tr>
+              <th>Tên Danh Mục</th>
+              <th>Hành Động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map((category) => (
+              <tr key={category._id}>
+                <td>
+                  {editingCategory?._id === category._id ? (
+                    <input
+                      type="text"
+                      value={editingCategory.name}
+                      onChange={(e) =>
+                        setEditingCategory({
+                          ...editingCategory,
+                          name: e.target.value,
+                        })
+                      }
+                      className={styles.editInput}
+                    />
+                  ) : (
+                    category.name
+                  )}
+                </td>
+                <td className={styles.categoryTableTdLast}>
+                  {editingCategory?._id === category._id ? (
+                    <>
+                      <button
+                        className={styles.btnSave}
+                        onClick={() =>
+                          handleUpdate(category._id, editingCategory.name)
+                        }
+                      >
+                        Lưu
+                      </button>
+                      <button
+                        className={styles.btnCancel}
+                        onClick={() => setEditingCategory(null)}
+                      >
+                        Hủy
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className={styles.btnEdit}
+                        onClick={() => handleEdit(category._id)}
+                      >
+                        Chỉnh sửa
+                      </button>
+                      <button
+                        className={styles.btnRemove}
+                        onClick={() => handleDelete(category._id)}
+                      >
+                        Xóa
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

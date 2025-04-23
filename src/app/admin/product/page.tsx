@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import "../product/product.css";
+import styles from "./product.module.css";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Category {
   _id: string;
@@ -10,7 +12,6 @@ interface Category {
 }
 
 interface Product {
-  oldImages: boolean;
   _id: string;
   name: string;
   price: number;
@@ -22,7 +23,6 @@ interface Product {
   ingredients?: string[];
   usage_instructions?: string[];
   special?: string[];
-  newImages?: File[];
 }
 
 export default function ProductPage() {
@@ -33,13 +33,22 @@ export default function ProductPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const productsPerPage = 9;
 
   const router = useRouter();
 
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || role !== "admin") {
+      router.push("/login");
+    }
+  }, [router]);
+
+  // Lấy danh sách sản phẩm và danh mục
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -56,7 +65,19 @@ export default function ProductPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("https://api-zeal.onrender.com/api/products", { cache: "no-store" });
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://api-zeal.onrender.com/api/products", {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (res.status === 401 || res.status === 403) {
+        alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("email");
+        router.push("/login");
+        return;
+      }
       if (!res.ok) {
         throw new Error(`Lỗi API: ${res.status} ${res.statusText}`);
       }
@@ -77,7 +98,19 @@ export default function ProductPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("https://api-zeal.onrender.com/api/categories", { cache: "no-store" });
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://api-zeal.onrender.com/api/categories", {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (res.status === 401 || res.status === 403) {
+        alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("email");
+        router.push("/login");
+        return;
+      }
       if (!res.ok) {
         throw new Error(`Lỗi API: ${res.status} ${res.statusText}`);
       }
@@ -93,110 +126,6 @@ export default function ProductPage() {
     }
   };
 
-  const validateForm = () => {
-    if (editProduct?.discountPrice != null && editProduct.discountPrice < 0)return "Giá khuyến mãi không hợp lệ";
-    if (!editProduct?.name?.trim()) return "Tên sản phẩm không được để trống";
-    if (editProduct?.price == null || editProduct.price < 0) return "Giá sản phẩm không hợp lệ";
-    if (editProduct?.stock == null || editProduct.stock < 0) return "Số lượng không hợp lệ";
-    if (!editProduct?.category || !editProduct.category._id) return "Vui lòng chọn danh mục";
-    if (editProduct?.newImages && editProduct.newImages.length > 4) return "Chỉ được chọn tối đa 4 ảnh";
-    return null;
-  };
-
-  const handleEdit = (product: Product) => {
-    setEditProduct({ ...product, newImages: [] });
-    setIsEditing(true);
-  };
-
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!editProduct || !editProduct._id) {
-      showNotification("Không tìm thấy sản phẩm để cập nhật", "error");
-      return;
-    }
-    try {
-      setLoading(true);
-      setError(null);
-    
-      // Kiểm tra dữ liệu
-      const validationError = validateForm();
-      if (validationError) {
-        throw new Error(validationError);
-      }
-    
-      const formData = new FormData();
-      formData.append("name", editProduct.name || "");
-      formData.append("price", editProduct.price?.toString() || "0");
-      formData.append("stock", editProduct.stock?.toString() || "0");
-      if (editProduct.category?._id) {
-        formData.append("category_id", editProduct.category._id);
-      }
-      if (editProduct.description) {
-        formData.append("description", editProduct.description);
-      }
-      if (editProduct.ingredients && editProduct.ingredients.length > 0) {
-        formData.append("ingredients", JSON.stringify(editProduct.ingredients));
-      }
-      if (editProduct.usage_instructions && editProduct.usage_instructions.length > 0) {
-        formData.append("usage_instructions", JSON.stringify(editProduct.usage_instructions));
-      }
-      if (editProduct.special && editProduct.special.length > 0) {
-        formData.append("special", JSON.stringify(editProduct.special));
-      }
-      if (editProduct.discountPrice != null && editProduct.discountPrice !== 0) {
-        formData.append("discountPrice", editProduct.discountPrice.toString());
-      }
-    
-      // Thêm ảnh cũ vào FormData
-      if (editProduct.oldImages && Array.isArray(editProduct.oldImages)) {
-        formData.append("oldImages", JSON.stringify(editProduct.oldImages));
-      }
-    
-      // Xử lý ảnh mới (nếu có)
-      if (editProduct.newImages && Array.isArray(editProduct.newImages) && editProduct.newImages.length > 0) {
-        editProduct.newImages.forEach((file, index) => {
-          if (!file || !file.size || !file.type) {
-            throw new Error(`Tệp ảnh ${file?.name || `vị trí ${index}`} không hợp lệ`);
-          }
-          if (file.size > 5 * 1024 * 1024) {
-            throw new Error(`Ảnh ${file.name} vượt quá giới hạn 5MB`);
-          }
-          if (!file.type.match(/image\/(jpg|jpeg|png|gif|webp)/)) {
-            throw new Error(`Ảnh ${file.name} không đúng định dạng (jpg, jpeg, png, gif, webp)`);
-          }
-          formData.append("images", file);
-        });
-      }
-    
-      console.log("FormData entries:", Array.from(formData.entries()));
-    
-      const response = await fetch(`https://api-zeal.onrender.com/api/products/${editProduct._id}`, {
-        method: "PUT",
-        body: formData,
-      });
-    
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API Error Response:", errorText);
-        throw new Error(`Lỗi HTTP: ${response.status} - ${errorText}`);
-      }
-    
-      const updatedProduct = await response.json();
-      console.log("Updated Product:", updatedProduct);
-    
-      setProducts(products.map((p) => (p._id === editProduct._id ? updatedProduct : p)));
-      setIsEditing(false);
-      setEditProduct(null);
-      showNotification("Cập nhật sản phẩm thành công", "success");
-      router.refresh();
-    } catch (error) {
-      console.error("Error updating product:", error);
-      setError("Có lỗi xảy ra khi cập nhật sản phẩm.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const confirmDelete = (id: string) => {
     setDeleteId(id);
     setIsDeleting(true);
@@ -207,10 +136,20 @@ export default function ProductPage() {
 
     try {
       setLoading(true);
-
+      const token = localStorage.getItem("token");
       const response = await fetch(`https://api-zeal.onrender.com/api/products/${deleteId}`, {
         method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (response.status === 401 || response.status === 403) {
+        alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("email");
+        router.push("/login");
+        return;
+      }
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -247,9 +186,9 @@ export default function ProductPage() {
 
   if (error && products.length === 0) {
     return (
-      <div className="error-container text-center py-10">
-        <p className="error-message">{error}</p>
-        <button className="retry-button mt-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={fetchProducts}>
+      <div className={styles.errorContainer}>
+        <p className={styles.errorMessage}>{error}</p>
+        <button className={styles.retryButton} onClick={fetchProducts}>
           Thử lại
         </button>
       </div>
@@ -257,16 +196,24 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="product-management-container">
-      {notification.show && <div className={`notification ${notification.type}`}>{notification.message}</div>}
-      {loading && products.length > 0 && <div className="processing-indicator">Đang xử lý...</div>}
-      <div className="title_container">
+    <div className={styles.productManagementContainer}>
+      {notification.show && (
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
+          {notification.message}
+        </div>
+      )}
+      {loading && products.length > 0 && (
+        <div className={styles.processingIndicator}>Đang xử lý...</div>
+      )}
+      <div className={styles.titleContainer}>
         <h1>SẢN PHẨM</h1>
-        <a href="/admin/add_product" className="add-product-btn">Thêm Sản Phẩm +</a>
+        <Link href="/admin/add_product" className={styles.addProductBtn}>
+          Thêm Sản Phẩm +
+        </Link>
       </div>
-      <div className="table-container">
-        <table>
-          <thead>
+      <div className={styles.tableContainer}>
+        <table className={styles.productTable}>
+          <thead className={styles.productTableThead}>
             <tr>
               <th>Ảnh</th>
               <th>Tên sản phẩm</th>
@@ -281,10 +228,16 @@ export default function ProductPage() {
               currentProducts.map((product) => (
                 <tr key={product._id}>
                   <td>
-                    <img
-                      src={product.images && product.images.length > 0 ? `/images/${product.images[0]}` : "/images/placeholder.png"}
+                    <Image
+                      src={
+                        product.images && product.images.length > 0
+                          ? `https://api-zeal.onrender.com/images/${product.images[0]}`
+                          : "/images/placeholder.png"
+                      }
                       alt={product.name}
-                      width="50"
+                      width={50}
+                      height={50}
+                      className={styles.productTableImage}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/images/placeholder.png";
                       }}
@@ -292,13 +245,21 @@ export default function ProductPage() {
                   </td>
                   <td>{product.name}</td>
                   <td>{product.category?.name || "Chưa phân loại"}</td>
-                  <td>{product.price}₫</td>
-                  <td>{product.stock}</td>
-                  <td className="action-buttons">
-                    <button className="edit-btn" onClick={() => handleEdit(product)} disabled={loading}>
+                  <td>{product.price.toLocaleString()}₫</td>
+                  <td className={styles.productTableQuantity}>{product.stock}</td>
+                  <td className={styles.actionButtons}>
+                    <button
+                      className={styles.editBtn}
+                      onClick={() => router.push(`/admin/edit_product/${product._id}`)}
+                      disabled={loading}
+                    >
                       Sửa
                     </button>
-                    <button className="delete-btn" onClick={() => confirmDelete(product._id)} disabled={loading}>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => confirmDelete(product._id)}
+                      disabled={loading}
+                    >
                       Xóa
                     </button>
                   </td>
@@ -306,21 +267,29 @@ export default function ProductPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-4">Không có sản phẩm nào</td>
+                <td colSpan={6} className="text-center py-4">
+                  Không có sản phẩm nào
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
       {totalPages > 1 && (
-        <div className="pagination">
-          <button className="page-link" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1 || loading}>
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageLink}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+          >
             Trước
           </button>
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
-              className={`page-link ${currentPage === index + 1 ? "active" : ""}`}
+              className={`${styles.pageLink} ${
+                currentPage === index + 1 ? styles.pageLinkActive : ""
+              }`}
               onClick={() => handlePageChange(index + 1)}
               disabled={loading}
             >
@@ -328,7 +297,7 @@ export default function ProductPage() {
             </button>
           ))}
           <button
-            className="page-link"
+            className={styles.pageLink}
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || loading}
           >
@@ -337,139 +306,21 @@ export default function ProductPage() {
         </div>
       )}
       {isDeleting && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h2>Xác nhận xóa sản phẩm</h2>
             <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
-            <div className="modal-actions">
-              <button className="confirm-btn" onClick={handleDelete}>Xóa</button>
-              <button className="cancel-btn" onClick={() => setIsDeleting(false)}>Hủy</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {isEditing && editProduct && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Chỉnh sửa sản phẩm</h2>
-            {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleUpdate}>
-              <label>Tên sản phẩm</label>
-              <input
-                type="text"
-                value={editProduct.name || ""}
-                onChange={(e) => setEditProduct({ ...editProduct, name: e.target.value })}
-                required
-              />
-              <label>Giá</label>
-              <input
-                type="number"
-                value={editProduct.price || 0}
-                onChange={(e) => setEditProduct({ ...editProduct, price: Number(e.target.value) })}
-                required
-                min="0"
-              />
-              <label>Giá khuyến mãi (nếu có)</label>
-              <input
-                type="number"
-                value={editProduct.discountPrice ?? ""}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, discountPrice: Number(e.target.value) || 0 })
-                }
-                />
-              <label>Số lượng</label>
-              <input
-                type="number"
-                value={editProduct.stock || 0}
-                onChange={(e) => setEditProduct({ ...editProduct, stock: Number(e.target.value) })}
-                required
-                min="0"
-              />
-              <label>Danh mục</label>
-              <select
-                value={editProduct.category?._id || ""}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    category: categories.find((cat) => cat._id === e.target.value) || undefined,
-                  })
-                }
-                required
+            <div className={styles.modalActions}>
+              <button className={styles.confirmBtn} onClick={handleDelete}>
+                Xóa
+              </button>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setIsDeleting(false)}
               >
-                <option value="">-- Chọn danh mục --</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-              <label>Mô tả</label>
-              <textarea
-                value={editProduct.description || ""}
-                onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
-              />
-              <label>Thành phần (phân cách bằng dấu phẩy)</label>
-              <input
-                type="text"
-                value={editProduct.ingredients?.join(", ") || ""}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    ingredients: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
-                  })
-                }
-              />
-              <label>Hướng dẫn sử dụng (phân cách bằng dấu phẩy)</label>
-              <input
-                type="text"
-                value={editProduct.usage_instructions?.join(", ") || ""}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    usage_instructions: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
-                  })
-                }
-              />
-              <label>Điểm đặc biệt (phân cách bằng dấu phẩy)</label>
-              <input
-                type="text"
-                value={editProduct.special?.join(", ") || ""}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    special: e.target.value.split(",").map((item) => item.trim()).filter(Boolean),
-                  })
-                }
-              />
-              <label>Ảnh mới (tối đa 4 ảnh)</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    newImages: e.target.files ? Array.from(e.target.files) : [],
-                  })
-                }
-              />
-              <div className="modal-actions">
-                <button className="confirm-btn" type="submit" disabled={loading}>
-                  Cập nhật
-                </button>
-                <button
-                  className="cancel-btn"
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setEditProduct(null);
-                    setError(null);
-                  }}
-                >
-                  Hủy
-                </button>
-              </div>
-            </form>
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styles from "./Detail.module.css";
 import { Product } from "@/app/components/product_interface";
+import Image from "next/image"; // Nhập Image nếu muốn dùng
 
 const formatPrice = (price: number): string => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 };
 
 const getImageUrl = (image: string): string => {
-  if (image.startsWith("/")) return image;
-  return `/images/${image}`;
+  if (!image) return "/images/placeholder.png"; // Hình ảnh dự phòng
+  return `https://api-zeal.onrender.com/images/${image}`;
 };
 
 export default function DetailPage() {
@@ -75,7 +76,20 @@ export default function DetailPage() {
                 className={`${styles.thumbnail} ${index === currentImageIndex ? styles.active : ""}`}
                 onClick={() => setCurrentImageIndex(index)}
               >
-                <img src={getImageUrl(image)} alt={`${product.name} thumbnail ${index + 1}`} />
+                {/* Sử dụng thẻ <img> hoặc thay bằng Image */}
+                <img
+                  src={getImageUrl(image)}
+                  alt={`${product.name} thumbnail ${index + 1}`}
+                />
+                {/* Nếu muốn dùng Image của Next.js:
+                <Image
+                  src={getImageUrl(image)}
+                  alt={`${product.name} thumbnail ${index + 1}`}
+                  width={100}
+                  height={100}
+                  className={styles.thumbnailImage}
+                />
+                */}
               </div>
             ))}
           </div>
@@ -87,6 +101,15 @@ export default function DetailPage() {
                 src={getImageUrl(product.images?.[currentImageIndex] || "")}
                 alt={product.name}
               />
+              {/* Nếu muốn dùng Image của Next.js:
+              <Image
+                src={getImageUrl(product.images?.[currentImageIndex] || "")}
+                alt={product.name}
+                width={400}
+                height={400}
+                className={styles.mainImage}
+              />
+              */}
             </div>
             <div className={styles["product-dots"]}>
               {product.images?.map((_, index) => (

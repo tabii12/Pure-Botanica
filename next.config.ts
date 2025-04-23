@@ -1,9 +1,14 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  experimental: {
-    allowedDevOrigins: ['http://192.168.1.11:3000'], // Thay địa chỉ IP và port nếu cần
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api-zeal.onrender.com',
+        pathname: '/images/**', // Tùy chọn: Chỉ cho phép đường dẫn /images/
+      },
+    ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

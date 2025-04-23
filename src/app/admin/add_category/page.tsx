@@ -1,7 +1,8 @@
+
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import "./add_category.css";
+import styles from "./AddCategory.module.css";
 
 export default function AddCategory() {
   const [name, setName] = useState("");
@@ -36,10 +37,10 @@ export default function AddCategory() {
   };
 
   return (
-    <div className="container-category">
+    <div className={styles.containerCategory}>
       <h2>Thêm Danh Mục Mới</h2>
-      <form onSubmit={handleSubmit} className="add-category-form">
-        <div className="form-group">
+      <form onSubmit={handleSubmit} className={styles.addCategoryForm}>
+        <div className={styles.formGroup}>
           <label htmlFor="name">Tên Danh Mục</label>
           <input
             type="text"
@@ -50,13 +51,13 @@ export default function AddCategory() {
             placeholder="Nhập tên danh mục"
           />
         </div>
-        <div className="form-buttons">
-          <button type="submit" className="btn-add" disabled={loading}>
+        <div className={styles.formButtons}>
+          <button type="submit" className={styles.btnAdd} disabled={loading}>
             {loading ? "Đang thêm..." : "Thêm Danh Mục"}
           </button>
           <button
             type="button"
-            className="btn-cancel"
+            className={styles.btnCancel}
             onClick={() => router.push("/admin/category")}
           >
             Hủy

@@ -17,7 +17,7 @@ export default function EditCategory() {
 
     const fetchCategory = async () => {
       try {
-        const res = await fetch(`http://localhost:3002/categories/${id}`);
+        const res = await fetch(`https://api-zeal.onrender.com/api/categories/${id}`);
         if (!res.ok) throw new Error("Không tìm thấy danh mục");
         const data = await res.json();
         setName(data.name);

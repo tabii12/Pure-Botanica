@@ -10,8 +10,8 @@ const formatPrice = (price: number): string => {
 };
 
 const getImageUrl = (image: string): string => {
-  if (image.startsWith("/")) return image;
-  return `/images/${image}`;
+  if (!image) return "/images/placeholder.png"; // Fallback image if none provided
+  return `https://api-zeal.onrender.com/images/${image}`;
 };
 
 export default function ProductPage() {
@@ -20,10 +20,10 @@ export default function ProductPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Thêm state loading
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const productsPerPage = 9;
 
-  // Fetch sản phẩm
+  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       setIsLoading(true);
@@ -33,7 +33,7 @@ export default function ProductPage() {
         setProducts(data);
         setFilteredProducts(data);
       } catch (error) {
-        console.error("Lỗi khi lấy sản phẩm:", error);
+        console.error("Error fetching products:", error);
       } finally {
         setIsLoading(false);
       }
@@ -49,7 +49,7 @@ export default function ProductPage() {
         const categoryNames = data.map((cat: any) => cat.name);
         setCategories(["Tất cả", ...categoryNames]);
       } catch (err) {
-        console.error("Lỗi khi lấy danh mục:", err);
+        console.error("Error fetching categories:", err);
       }
     };
     fetchCategories();
@@ -57,13 +57,11 @@ export default function ProductPage() {
 
   const filterProducts = (category: string) => {
     if (category === "Tất cả" || activeCategory === category) {
-      // Reset về tất cả sản phẩm
       setFilteredProducts(products);
       setActiveCategory(null);
     } else {
       const filtered = products.filter((product) => {
-  
-        return product.category && product.category.name === category;
+        return product.category && product.category === category;
       });
       setFilteredProducts(filtered.length > 0 ? filtered : []);
       setActiveCategory(category);
@@ -112,7 +110,7 @@ export default function ProductPage() {
                     cursor: "pointer",
                   }}
                 >
-                  {category}  
+                  {category}
                 </span>
               </li>
             ))}
@@ -191,7 +189,6 @@ export default function ProductPage() {
                     </button>
                   );
                 }
-
                 if (end < totalPages) {
                   paginationRange.push(
                     <span key="end-ellipsis" className={styles["ellipsis"]}>
@@ -199,10 +196,8 @@ export default function ProductPage() {
                     </span>
                   );
                 }
-
                 return paginationRange;
               })()}
-
               <button
                 className={`${styles["page-btn"]} ${
                   currentPage === totalPages ? styles.disabled : ""
@@ -231,7 +226,7 @@ export default function ProductPage() {
                   <div className={styles["best-selling-badge"]}>Sale</div>
                   <div className={styles["best-selling-image"]}>
                     <Image
-                      src={getImageUrl(product.images?.[0] || "/images/Apple-Pay.png")}
+                      src={getImageUrl(product.images?.[0] || "")}
                       alt={product.name}
                       width={200}
                       height={200}
