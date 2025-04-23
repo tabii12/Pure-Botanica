@@ -13,6 +13,7 @@ export interface Product {
   _id: string;
   name: string;
   price: number;
+  discountPrice: number;
   description: string;
   images: string[];
   stock: number;

@@ -128,13 +128,17 @@ export default function ProductPage() {
                   className={`${styles.productItem} ${styles["product-link"]}`}
                 >
                   <div>
-                    <Image
-                      src={getImageUrl(product.images?.[0] || "")}
-                      alt={product.name}
-                      width={300}
-                      height={200}
-                      className={styles["product-image"]}
-                    />
+                  <Image
+                    src={
+                      product.images && product.images.length > 0
+                        ? `https://api-zeal.onrender.com/images/${product.images[0]}`
+                        : "https://via.placeholder.com/300x200?text=No+Image"
+                    }
+                    alt={product.name}
+                    width={300}
+                    height={200}
+                    className={styles["product-image"]}
+                  />
                     <div>
                       <h4 className={styles["product-item-name"]}>{product.name}</h4>
                       <div className={styles["product-card"]}>
