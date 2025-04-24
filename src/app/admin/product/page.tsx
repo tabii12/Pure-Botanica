@@ -4,7 +4,7 @@ import styles from "./product.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-
+  
 interface Category {
   _id: string;
   name: string;
