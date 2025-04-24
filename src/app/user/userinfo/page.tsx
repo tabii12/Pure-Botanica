@@ -55,7 +55,13 @@ export default function UserProfile() {
                 <p className={styles.infoRow}><strong>SĐT:</strong> {user.phone}</p>
                 <p className={styles.infoRow}><strong>Trạng thái:</strong> {user.status}</p>
                 <p className={styles.infoRow}><strong>Ngày sinh:</strong> {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Chưa cập nhật"}</p>
-                <p className={styles.infoRow}><strong>Đơn hàng:</strong> {user.listOrder.length === 0 ? "Chưa có đơn hàng" : user.listOrder.length + " đơn hàng"}</p>
+                <p className={styles.infoRow}>
+                <strong>Đơn hàng:</strong> 
+                {user?.listOrder?.length === 0 
+                    ? "Chưa có đơn hàng" 
+                    : user?.listOrder?.length + " đơn hàng"}
+                </p>
+
             </div>
 
             <Link href={`/user/edituser/${user._id}`} className={styles.editLink}>

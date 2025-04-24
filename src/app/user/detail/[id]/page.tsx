@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styles from "./Detail.module.css";
 import { Product } from "@/app/components/product_interface";
-import Image from "next/image"; // Nhập Image nếu muốn dùng
+import Image from "next/image"; 
 
 const formatPrice = (price: number): string => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
@@ -20,6 +20,37 @@ export default function DetailPage() {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [cartMessage, setCartMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  useEffect(() => {
+    // Lấy userId từ token JWT
+    const getUserIdFromToken = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
+          );
+          const decoded = JSON.parse(jsonPayload);
+          const userIdFromToken = decoded.id || decoded._id;
+          if (userIdFromToken) {
+            setUserId(userIdFromToken);
+          }
+        } catch (err) {
+          console.error("Lỗi khi giải mã token:", err);
+        }
+      }
+    };
+
+    getUserIdFromToken();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -39,26 +70,93 @@ export default function DetailPage() {
 
   const increaseQty = () => setQuantity((prev) => prev + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  const addToCart = () => {
+  
+  const addToCart = async () => {
     if (!product) return;
 
-    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
-
-    if (existingItemIndex !== -1) {
-      cartItems[existingItemIndex].quantity += quantity;
-    } else {
-      cartItems.push({
-        id: product.id,
-        name: product.name,
-        price: product.discountPrice || product.price,
-        image: product.images?.[0] || "",
-        quantity,
+    // Kiểm tra nếu người dùng đã đăng nhập
+    if (!userId) {
+      setCartMessage({
+        type: 'error',
+        text: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng'
       });
+      
+      // Lưu vào localStorage như trước đây
+      const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+      const existingItemIndex = cartItems.findIndex((item: any) => item.id === product._id);
+
+      if (existingItemIndex !== -1) {
+        cartItems[existingItemIndex].quantity += quantity;
+      } else {
+        cartItems.push({
+          id: product._id,
+          name: product.name,
+          price: product.discountPrice || product.price,
+          image: product.images?.[0] || "",
+          quantity,
+        });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cartItems));
+      alert("Đã thêm vào giỏ hàng (localStorage)!");
+      return;
     }
 
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-    alert("Đã thêm vào giỏ hàng!");
+    setAddingToCart(true);
+    
+    try {
+      // Kiểm tra xem sản phẩm ID có đúng không 
+      const productId = product._id;
+      if (!productId) {
+        throw new Error("ID sản phẩm không hợp lệ");
+      }
+      
+      console.log("Product ID:", productId);
+      console.log("User ID:", userId);
+      console.log("Quantity:", quantity);
+      
+      // Sử dụng endpoint chính xác user/carts/add
+      const response = await fetch(
+        `https://api-zeal.onrender.com/api/carts/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            productId: productId,
+            quantity: quantity
+          }),
+        }
+      );
+      
+      const responseData = await response.json();
+      console.log("API response:", responseData);
+      
+      if (!response.ok) {
+        throw new Error(responseData.message || "Không thể thêm sản phẩm vào giỏ hàng");
+      }
+      
+      setCartMessage({
+        type: 'success',
+        text: 'Đã thêm sản phẩm vào giỏ hàng!'
+      });
+      
+      // Xóa thông báo sau 3 giây
+      setTimeout(() => {
+        setCartMessage(null);
+      }, 3000);
+      
+    } catch (error: any) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      setCartMessage({
+        type: 'error',
+        text: `Lỗi: ${error.message}`
+      });
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   if (loading) return <p className="text-center py-10">Đang tải chi tiết sản phẩm...</p>;
@@ -76,20 +174,10 @@ export default function DetailPage() {
                 className={`${styles.thumbnail} ${index === currentImageIndex ? styles.active : ""}`}
                 onClick={() => setCurrentImageIndex(index)}
               >
-                {/* Sử dụng thẻ <img> hoặc thay bằng Image */}
                 <img
                   src={getImageUrl(image)}
                   alt={`${product.name} thumbnail ${index + 1}`}
                 />
-                {/* Nếu muốn dùng Image của Next.js:
-                <Image
-                  src={getImageUrl(image)}
-                  alt={`${product.name} thumbnail ${index + 1}`}
-                  width={100}
-                  height={100}
-                  className={styles.thumbnailImage}
-                />
-                */}
               </div>
             ))}
           </div>
@@ -101,15 +189,6 @@ export default function DetailPage() {
                 src={getImageUrl(product.images?.[currentImageIndex] || "")}
                 alt={product.name}
               />
-              {/* Nếu muốn dùng Image của Next.js:
-              <Image
-                src={getImageUrl(product.images?.[currentImageIndex] || "")}
-                alt={product.name}
-                width={400}
-                height={400}
-                className={styles.mainImage}
-              />
-              */}
             </div>
             <div className={styles["product-dots"]}>
               {product.images?.map((_, index) => (
@@ -167,10 +246,21 @@ export default function DetailPage() {
                   +
                 </button>
               </div>
-              <button className={styles["add-to-cart"]} onClick={addToCart}>
-                Thêm vào giỏ hàng
+              <button 
+                className={styles["add-to-cart"]} 
+                onClick={addToCart}
+                disabled={addingToCart}
+              >
+                {addingToCart ? 'Đang thêm...' : 'Thêm vào giỏ hàng'}
               </button>
             </div>
+
+            {/* Thông báo kết quả thêm vào giỏ hàng */}
+            {cartMessage && (
+              <div className={`${styles["cart-message"]} ${styles[cartMessage.type]}`}>
+                {cartMessage.text}
+              </div>
+            )}
           </div>
         </section>
 
