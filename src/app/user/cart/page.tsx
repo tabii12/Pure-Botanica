@@ -6,10 +6,10 @@ import styles from "./Cart.module.css";
 import { Cart, CartItem, Product } from "@/app/components/cart_interface";
 
 export default function CartPage() {
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,11 +54,15 @@ export default function CartPage() {
       if (!cartResponse.ok) {
         throw new Error("Không thể lấy dữ liệu giỏ hàng");
       }
-      const cartData = await cartResponse.json();
+      const cartData: Cart = await cartResponse.json();
       setCart(cartData);
       setLoading(false);
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Đã xảy ra lỗi không xác định");
+      }
       setLoading(false);
     }
   };
@@ -68,7 +72,7 @@ export default function CartPage() {
     fetchCart();
   }, [userId]);
 
-  const increaseQuantity = async (productId, currentQuantity) => {
+  const increaseQuantity = async (productId: string, currentQuantity: number) => {
     const newQuantity = currentQuantity + 1;
     try {
       const response = await fetch(`https://api-zeal.onrender.com/api/carts/update`, {
@@ -93,11 +97,15 @@ export default function CartPage() {
 
       await fetchCart();
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Đã xảy ra lỗi không xác định");
+      }
     }
   };
 
-  const decreaseQuantity = async (productId, currentQuantity) => {
+  const decreaseQuantity = async (productId: string, currentQuantity: number) => {
     if (currentQuantity <= 1) {
       await removeItem(productId);
       return;
@@ -127,11 +135,15 @@ export default function CartPage() {
 
       await fetchCart();
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Đã xảy ra lỗi không xác định");
+      }
     }
   };
 
-  const removeItem = async (productId) => {
+  const removeItem = async (productId: string) => {
     try {
       const response = await fetch(`https://api-zeal.onrender.com/api/carts/remove`, {
         method: "DELETE",
@@ -152,14 +164,16 @@ export default function CartPage() {
         );
       }
 
-      // Gọi lại API để lấy dữ liệu giỏ hàng đầy đủ
       await fetchCart();
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Đã xảy ra lỗi không xác định");
+      }
     }
   };
 
-  // Tính tổng cộng
   const calculateTotal = () => {
     if (!cart || !cart.items || cart.items.length === 0) return 0;
     return cart.items.reduce((total, item) => {
@@ -168,8 +182,7 @@ export default function CartPage() {
     }, 0);
   };
 
-  // Định dạng giá tiền
-  const formatPrice = (price) => {
+  const formatPrice = (price: number) => {
     const numericPrice = Number(price) || 0;
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -213,7 +226,7 @@ export default function CartPage() {
               <tbody className={styles["cart-tbody"]}>
                 {cart.items.map((item, index) => (
                   <tr
-                    key={item._id || `${item.product._id}-${index}`} // Sử dụng item._id nếu có, hoặc kết hợp product._id với index
+                    key={item._id || `${item.product._id}-${index}`}
                     className={styles["cart-row"]}
                   >
                     <td className={`${styles["cart-cell"]} ${styles.product}`}>
